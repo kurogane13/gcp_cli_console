@@ -354,7 +354,6 @@ def test_case_module():
     if test_case_menu_selection == 'b':
         from gcp_interactive_cli_v2 import main_menu
     else:
-        #input('\nInvalid option selected, you must type a number or letter from the menu. Press enter to get back to test cases main menu: ')
         test_case_module()
 
 #test_case_module()
