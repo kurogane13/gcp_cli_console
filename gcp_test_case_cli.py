@@ -6,10 +6,18 @@ import random
 import importlib
 from datetime import datetime
 
+def select_menu():
+    print('\n- m - Main menu')
+    print('- c - Compute engine menu')
+    selector=input('\nType the option of the menu from which you want to add a test case: ')
+    if selector=='m':
+        create_case_main_menu()
+    if selector=='c':
+        create_case_compute_menu()
 def add_another_step_main_menu():
     add_step_or_not=input("\nDo you want to add another step to this test case?. y/n: ")
     if add_step_or_not == "y":
-        create_case_main_menu()
+        select_menu()
     if add_step_or_not == "n":
         input("\nYou decided not to add more steps for this test case. Press enter to get back to the test case module menu: ")
         test_case_module()
@@ -18,7 +26,15 @@ def add_another_step_main_menu():
         add_another_step_main_menu()
 
 def add_another_step_compute_menu():
-    pass
+    add_step_or_not = input("\nDo you want to add another step to this test case?. y/n: ")
+    if add_step_or_not == "y":
+        select_menu()
+    if add_step_or_not == "n":
+        input("\nYou decided not to add more steps for this test case. Press enter to get back to the test case module menu: ")
+        test_case_module()
+    else:
+        input('\nInvalid input. Type either "y" or "n" and press enter.')
+        add_another_step_main_menu()
 
 def timestamp():
     now=datetime.now()
@@ -52,7 +68,7 @@ def create_case_main_menu():
     gcloud_organizations_list='gcloud organizations list'
     #string_to_write=
     print("*******************************************")
-    print('        GCP TEST CASE CREATION MAIN MENU       \n')
+    print('      GCP TEST CASE CREATION MAIN MENU   \n')
     print('1 - Retrieve billing data for default project: byoid-ui-testing-project')
     print('2 - Retrieve billing data for another project')
     print('3 - Describe project: byoid-ui-testing-project')
@@ -235,6 +251,59 @@ def create_case_main_menu():
         input('\nInvalid option provided. Press enter to get back to the main menu.')
         create_case_main_menu()
 
+def create_case_compute_menu():
+    global new_line, quote, pyext, print_string, right_bracket, left_bracket, import_os_module, import_sys_module, os_system, space, plus, test_case_file_name, equals, colons, running
+    new_line = ('\n')
+    quote = "'"
+    pyext = ".py"
+    print_string = ("print")
+    left_bracket = "("
+    right_bracket = ")"
+    os_system = "os.system"
+    import_os_module = "import os"
+    import_sys_module = "import sys"
+    space = " "
+    plus = "+"
+    equals = "="
+    colon = ":"
+    dots = "..."
+    running = "Running"
+    gcloud_compute_list_zones='gcloud compute zones list'
+    print("*******************************************")
+    print('   GCP TEST CASE COMPUTE CREATION MENU   \n')
+    print('1 - List zones')
+    print('2 - Describe specific zone')
+    print('3 - List running vms - os-instances')
+    print('4 - Describe a vm instance - os-instance')
+    print('5 - Find vm by name')
+    print('6 - Find vm by image name')
+    print('7 - List images')
+    print('8 - SSH into vm only with vm name - simple mode')
+    print('9 - Create default VM instance/s - To create more than one separate strings by space')
+    print('10 - Delete vm instance/s - To delete more than one separate strings by space')
+    print('11 - Create an instance template')
+    print('12 - Delete an instance template')
+    print('13 - Find an instance template')
+    print('14 - List instance templates')
+    print('15 - Describe an instance template')
+    selection = input(
+        '\nPlease provide the action item you want to add to the test case.\nType a number or letter from the menu and press enter to operate: ')
+    if selection == '1':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def m1_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 1 - List zones"
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Listing compute zones: '+quote+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_list_zones+quote+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+
+            m1_build_python_case_file()
+        add_another_step_compute_menu()
 def test_case_module():
     def build_new_test_case():
         global new_test_case_input, test_case_string_var, test_case_file_name, pyext, new_line, random_id, id
@@ -356,4 +425,4 @@ def test_case_module():
     else:
         test_case_module()
 
-#test_case_module()
+

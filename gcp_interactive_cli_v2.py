@@ -428,7 +428,6 @@ def compute_engine_module():
     print('14 - List instance templates')
     print('15 - Describe an instance template')
     print('a - > Advanced mode - requires more advanced knowledge')
-
     print('b - < Back to main menu')
     print('\n')
     compute_selection = input('Type a number or letter from the menu and press enter to operate: ')
