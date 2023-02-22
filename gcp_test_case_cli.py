@@ -14,6 +14,7 @@ def select_menu():
         create_case_main_menu()
     if selector=='c':
         create_case_compute_menu()
+
 def add_another_step_main_menu():
     add_step_or_not=input("\nDo you want to add another step to this test case?. y/n: ")
     if add_step_or_not == "y":
@@ -400,13 +401,28 @@ def test_case_module():
         except:
             invalid_file_provided()
 
+    def delete_cases():
+        test_case_string_var = "_tst_k_s_id_"
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        check_file = os.path.isfile(test_case_string_var)
+        delete_test_cases=input("Type the test case file to delete. If it is more than one, separate them with spaces: ")
+        for file in os.listdir(path=dir_path):
+            if test_case_string_var in delete_test_cases:
+                os.remove(file)
+                print('\nRemoved file: '+delete_test_cases)
+            else:
+                print('\nCannot delete file: '+file+'.Deletion restricted to test case files syntax.')
+        input('\nPress enter to get back to the main menu: ')
+        test_case_module()
+
     print('Mode T accessed.\n')
     print("*******************************************")
     print('          TEST CASE MODULE MENU           \n')
     print('1 - Build a new test case')
     print('2 - Run test case/s')
-    print('3 - View saved test cases')
-    print('4 - Read test case steps from file')
+    print('3 - Delete test case file/s')
+    print('4 - View saved test cases')
+    print('5 - Read test case steps from file')
     print('c <- Compute engine module')
     print('b <- Back to Main menu')
     test_case_menu_selection=input('\nSelect an option from the menu and press enter: ')
@@ -415,8 +431,10 @@ def test_case_module():
     if test_case_menu_selection == '2':
         run_test_cases()
     if test_case_menu_selection == '3':
+        delete_cases()
+    if test_case_menu_selection == '4':
         view_test_cases()
-    if test_case_menu_selection == "4":
+    if test_case_menu_selection == "5":
         reading_steps_from_file()
     if test_case_menu_selection == 'c':
         from gcp_interactive_cli_v2 import compute_engine_module
