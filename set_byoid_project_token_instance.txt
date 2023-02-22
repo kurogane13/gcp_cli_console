@@ -1,1 +1,0 @@
-gcloud iam workforce-pools create-cred-config locations/global/workforcePools/byoid-ui-test-pool/providers/okta-provider  --subject-token-type=urn:ietf:params:oauth:token-type:id_token --credential-source-file=gcp_token_3_p.txt --workforce-pool-user-project=byoid-ui-testing-project --output-file=config.json
