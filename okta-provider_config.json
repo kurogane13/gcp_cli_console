@@ -1,0 +1,11 @@
+{
+  "type": "external_account",
+  "audience": "//iam.googleapis.com/locations/global/workforcePools/byoid-ui-test-pool/providers/okta-provider",
+  "subject_token_type": "urn:ietf:params:oauth:token-type:id_token",
+  "token_url": "https://sts.googleapis.com/v1/token",
+  "credential_source": {
+    "file": "okta_key"
+  },
+  "workforce_pool_user_project": "byoid-ui-testing-project",
+  "token_info_url": "https://sts.googleapis.com/v1/introspect"
+}
