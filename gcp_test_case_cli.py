@@ -405,24 +405,47 @@ def test_case_module():
         test_case_string_var = "_tst_k_s_id_"
         dir_path = os.path.dirname(os.path.realpath(__file__))
         check_file = os.path.isfile(test_case_string_var)
-        delete_test_cases=input("Type the test case file to delete. If it is more than one, separate them with spaces: ")
-        for file in os.listdir(path=dir_path):
-            if test_case_string_var in delete_test_cases:
-                os.remove(file)
+        print('\nNOTE: only test case files containing syntax: ' + test_case_string_var + ' will be removed.')
+        delete_test_cases=input("\nType the test case file to delete. If it is more than one, separate them with spaces: ")
+        cases_to_delete = []
+        for case in delete_test_cases.split():
+            cases_to_delete.append(case)
+        print(cases_to_delete)
+        for case in cases_to_delete:
+            if test_case_string_var in case:
+                os.remove(case)
                 print('\nRemoved file: '+delete_test_cases)
-            else:
-                print('\nCannot delete file: '+file+'.Deletion restricted to test case files syntax.')
         input('\nPress enter to get back to the main menu: ')
         test_case_module()
 
-    print('Mode T accessed.\n')
+    def delete_all_test_cases():
+        test_case_string_var = "_tst_k_s_"
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        delete_all=input('\nWARNING. You are about to delete all the test cases. Confirm? y/n: ')
+        if delete_all == 'y':
+            for case in os.listdir(path=dir_path):
+                if test_case_string_var in case:
+                    os.remove(case)
+                    print('\nRemoved test case: '+case)
+            enter=input('\nPress enter to get back to the main menu: ')
+            test_case_module()
+        if delete_all == 'n':
+            print('\nAborted deletion of all the test case files.')
+            input('\nPress enter to get back to the main menu: ')
+            test_case_module()
+        else:
+            delete_all_test_cases()
+
+
+    print('\nMode T accessed.\n')
     print("*******************************************")
     print('          TEST CASE MODULE MENU           \n')
     print('1 - Build a new test case')
     print('2 - Run test case/s')
     print('3 - Delete test case file/s')
-    print('4 - View saved test cases')
-    print('5 - Read test case steps from file')
+    print('4 - Delete all test case files')
+    print('5 - View saved test cases')
+    print('6 - Read test case steps from file')
     print('c <- Compute engine module')
     print('b <- Back to Main menu')
     test_case_menu_selection=input('\nSelect an option from the menu and press enter: ')
@@ -433,8 +456,10 @@ def test_case_module():
     if test_case_menu_selection == '3':
         delete_cases()
     if test_case_menu_selection == '4':
+        delete_all_test_cases()
+    if test_case_menu_selection == '5':
         view_test_cases()
-    if test_case_menu_selection == "5":
+    if test_case_menu_selection == "6":
         reading_steps_from_file()
     if test_case_menu_selection == 'c':
         from gcp_interactive_cli_v2 import compute_engine_module
