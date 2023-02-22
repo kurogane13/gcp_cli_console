@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 241de10 (commiting changes)
 # GCP cli console
 GCP cli interactive console and test builder
 
@@ -11,3 +15,10 @@ To run the program: clone the repo, and run the latest version of the file: gcp_
 
  - Interactive gcloud main program: gcp_interactive_cli_v(<version_number_here>).py
  - Cli builder module: gcp_test_case_cli.py
+<<<<<<< HEAD
+=======
+=======
+# gcp_cli_console
+GCP cli interactive console and test builder
+>>>>>>> beeaeed (Initial commit)
+>>>>>>> 241de10 (commiting changes)
