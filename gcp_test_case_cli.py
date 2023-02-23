@@ -278,6 +278,7 @@ def create_case_compute_menu():
     gcloud_compute_vm_image_find='gcloud compute images list --filter="name='
     gcloud_compute_images_list='gcloud compute images list'
     gcloud_compute_ssh_simmple='gcloud compute ssh '
+    gcloud_compute_create_vm_instance='gcloud compute instances create '
     print("*******************************************")
     print('   GCP TEST CASE COMPUTE CREATION MENU   \n')
     print('1 - List zones')
@@ -431,6 +432,58 @@ def create_case_compute_menu():
                 file.close()
                 print('\nAdded ' + step_string)
             c8_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '9':
+        #CREATE MANY INSTANCES OF VMS
+        with open(test_case_file_name + pyext, 'a') as file:
+            def c9_build_python_case_file():
+                global step_string_var, step_string
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 9 - Create vm instance"
+                create_vm_instance=input('Provide a name to create a vm instance. If more than one is needed, separate them  with spaces: ')
+                create_vm_instance_var='vm_instances_create=['
+                vm_instances_list=[]
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(create_vm_instance_var)
+                for create_vm in create_vm_instance.split():
+                    vm_instances_list.append(create_vm)
+                for vm_instance_created in vm_instances_list:
+                    file.write(quote+vm_instance_created+quote)
+            c9_build_python_case_file()
+        file.close()
+        def c9_2_build_python_case_file():
+            out = '_'
+            test_case_file_name_out = test_case_file_name + out
+            quotes = "''"
+            quotes_coma = "', '"
+            input_file = open(test_case_file_name + pyext, "rt")
+            # Open the output file
+            out_file = open(test_case_file_name_out + pyext, "wt")
+            # Iterate through the lines of the first file
+            for line in input_file:
+                # Write onto the output file.
+                out_file.write(line.replace(quotes, quotes_coma))
+            # Close both files.
+            input_file.close()
+            out_file.close()
+            create_vm_instance_var_close = "]"
+            out_file=open(test_case_file_name_out + pyext, "a")
+            out_file.write(create_vm_instance_var_close+new_line)
+            for_vm_instance_var = 'for vm_to_create in vm_instances_create: '
+            vm_to_create_var='vm_to_create'
+            out_file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+            out_file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+            out_file.write(print_string+left_bracket+quote+'Attempting to create vm instances: '+quote+right_bracket+new_line)
+            out_file.write(for_vm_instance_var+new_line)
+            out_file.write("    "+print_string+left_bracket+quote+"Creating vm instance: "+quote+plus+vm_to_create_var+plus+quote+dots+quote+right_bracket+new_line)
+            out_file.write("    "+os_system+left_bracket+quote+gcloud_compute_create_vm_instance+quote+plus+vm_to_create_var+right_bracket+new_line)
+            file.close()
+            os.remove(test_case_file_name+pyext)
+            rename_file=test_case_file_name_out+pyext
+            new_filename=test_case_file_name+pyext
+            os.rename(rename_file, new_filename)
+            print('\nAdded ' + step_string)
+        c9_2_build_python_case_file()
         add_another_step_compute_menu()
 def test_case_module():
     def build_new_test_case():
