@@ -6,10 +6,19 @@ import random
 import importlib
 from datetime import datetime
 
+def select_menu():
+    print('\n- m - Main menu')
+    print('- c - Compute engine menu')
+    selector=input('\nType the option of the menu from which you want to add a test case: ')
+    if selector=='m':
+        create_case_main_menu()
+    if selector=='c':
+        create_case_compute_menu()
+
 def add_another_step_main_menu():
     add_step_or_not=input("\nDo you want to add another step to this test case?. y/n: ")
     if add_step_or_not == "y":
-        create_case_main_menu()
+        select_menu()
     if add_step_or_not == "n":
         input("\nYou decided not to add more steps for this test case. Press enter to get back to the test case module menu: ")
         test_case_module()
@@ -18,7 +27,15 @@ def add_another_step_main_menu():
         add_another_step_main_menu()
 
 def add_another_step_compute_menu():
-    pass
+    add_step_or_not = input("\nDo you want to add another step to this test case?. y/n: ")
+    if add_step_or_not == "y":
+        select_menu()
+    if add_step_or_not == "n":
+        input("\nYou decided not to add more steps for this test case. Press enter to get back to the test case module menu: ")
+        test_case_module()
+    else:
+        input('\nInvalid input. Type either "y" or "n" and press enter.')
+        add_another_step_main_menu()
 
 def timestamp():
     now=datetime.now()
@@ -52,7 +69,7 @@ def create_case_main_menu():
     gcloud_organizations_list='gcloud organizations list'
     #string_to_write=
     print("*******************************************")
-    print('        GCP TEST CASE CREATION MAIN MENU       \n')
+    print('      GCP TEST CASE CREATION MAIN MENU   \n')
     print('1 - Retrieve billing data for default project: byoid-ui-testing-project')
     print('2 - Retrieve billing data for another project')
     print('3 - Describe project: byoid-ui-testing-project')
@@ -235,6 +252,294 @@ def create_case_main_menu():
         input('\nInvalid option provided. Press enter to get back to the main menu.')
         create_case_main_menu()
 
+def create_case_compute_menu():
+    global new_line, quote, pyext, print_string, right_bracket, left_bracket, import_os_module, import_sys_module, os_system, space, plus, test_case_file_name, equals, colons, running, double_quotes
+    new_line = ('\n')
+    quote = "'"
+    pyext = ".py"
+    print_string = ("print")
+    left_bracket = "("
+    right_bracket = ")"
+    os_system = "os.system"
+    import_os_module = "import os"
+    import_sys_module = "import sys"
+    space = " "
+    plus = "+"
+    equals = "="
+    colon = ":"
+    dots = "..."
+    double_quotes='"'
+    running = "Running"
+    gcloud_compute_list_zones='gcloud compute zones list'
+    gcloud_compute_describe_zone='gcloud compute zones describe '
+    gcloud_compute_instances_os_inventory_list_instances='gcloud compute instances os-inventory list-instances'
+    gcloud_compute_describe_vm_instance='gcloud compute instances os-inventory describe '
+    gcloud_compute_vm_instances_find='gcloud compute instances list --filter="name='
+    gcloud_compute_vm_image_find='gcloud compute images list --filter="name='
+    gcloud_compute_images_list='gcloud compute images list'
+    gcloud_compute_ssh_simmple='gcloud compute ssh '
+    gcloud_compute_create_vm_instance='gcloud compute instances create '
+    gcloud_compute_delete_vm_instance='gcloud compute instances delete '
+    print("*******************************************")
+    print('   GCP TEST CASE COMPUTE CREATION MENU   \n')
+    print('1 - List zones')
+    print('2 - Describe specific zone')
+    print('3 - List running vms - os-instances')
+    print('4 - Describe a vm instance - os-instance')
+    print('5 - Find vm by name')
+    print('6 - Find vm by image name')
+    print('7 - List images')
+    print('8 - SSH into vm only with vm name - simple mode')
+    print('9 - Create default VM instance/s - To create more than one separate strings by space')
+    print('10 - Delete vm instance/s - To delete more than one separate strings by space')
+    print('11 - Create an instance template')
+    print('12 - Delete an instance template')
+    print('13 - Find an instance template')
+    print('14 - List instance templates')
+    print('15 - Describe an instance template')
+    selection = input(
+        '\nPlease provide the action item you want to add to the test case.\nType a number or letter from the menu and press enter to operate: ')
+    if selection == '1':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def c1_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 1 - List zones"
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Listing compute zones: '+quote+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_list_zones+quote+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+            c1_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '2':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def c2_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 2 - Describe specific zone"
+                zone_to_describe=input('Provide a valid zone name to describe: ')
+                zone_to_describe_var='zone_to_describe'
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(zone_to_describe_var+equals+quote+zone_to_describe+quote+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Describing zone: '+quote+plus+zone_to_describe_var+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_describe_zone+quote+plus+zone_to_describe_var+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+            c2_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '3':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def c3_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 3 - List running vms - os-instances"
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Listing running os instances: '+quote+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_instances_os_inventory_list_instances+quote+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+            c3_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '4':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def c4_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 4 - Describe a vm instance - os-instance"
+                vm_instance_to_describe=input('Provide a valid vm instance name to describe: ')
+                vm_instance_to_describe_var='vm_instance_description'
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(vm_instance_to_describe_var+equals+quote+vm_instance_to_describe+quote+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Describing vm instance: '+quote+plus+vm_instance_to_describe_var+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_describe_vm_instance+quote+plus+vm_instance_to_describe_var+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+            c4_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '5':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def c5_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 5 - Find a vm instance - os-instance"
+                vm_instance_to_find=input('Provide a valid vm instance name to find: ')
+                vm_instance_to_find_var='vm_instance_to_find'
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(vm_instance_to_find_var+equals+quote+vm_instance_to_find+quote+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Finding vm instance: '+quote+plus+vm_instance_to_find_var+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_vm_instances_find+vm_instance_to_find+double_quotes+quote+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+            c5_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '6':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def c6_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 6 - Find vm by image name"
+                vm_image_to_find=input('Provide a valid vm image name to find: ')
+                vm_image_to_find_var='vm_instance_to_find'
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(vm_image_to_find_var+equals+quote+vm_image_to_find+quote+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Finding vm image name: '+quote+plus+vm_image_to_find_var+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_vm_image_find+vm_image_to_find+double_quotes+quote+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+            c6_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '7':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def c7_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 7 - List images"
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Listing images: '+quote+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_images_list+quote+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+            c7_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '8':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def c8_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 8 - SSH into vm only with vm name - simple mode"
+                ssh_to_vm=input('Provide a valid vm name to ssh into: ')
+                ssh_to_vm_var='ssh_to_vm'
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(ssh_to_vm_var+equals+quote+ssh_to_vm+quote+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Attempting to log in via ssh to vm: '+quote+plus+ssh_to_vm_var+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_ssh_simmple+quote+plus+ssh_to_vm_var+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+            c8_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '9':
+        #CREATE MANY INSTANCES OF VMS
+        with open(test_case_file_name + pyext, 'a') as file:
+            def c9_build_python_case_file():
+                global step_string_var, step_string
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 9 - Create vm instance"
+                create_vm_instance=input('Provide a name to create a vm instance. If more than one is needed, separate them  with spaces: ')
+                create_vm_instance_var='vm_instances_create=['
+                vm_instances_list=[]
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(create_vm_instance_var)
+                for create_vm in create_vm_instance.split():
+                    vm_instances_list.append(create_vm)
+                for vm_instance_created in vm_instances_list:
+                    file.write(quote+vm_instance_created+quote)
+            c9_build_python_case_file()
+        file.close()
+        def c9_2_build_python_case_file():
+            out = '_'
+            test_case_file_name_out = test_case_file_name + out
+            quotes = "''"
+            quotes_coma = "', '"
+            input_file = open(test_case_file_name + pyext, "rt")
+            # Open the output file
+            out_file = open(test_case_file_name_out + pyext, "wt")
+            # Iterate through the lines of the first file
+            for line in input_file:
+                # Write onto the output file.
+                out_file.write(line.replace(quotes, quotes_coma))
+            # Close both files.
+            input_file.close()
+            out_file.close()
+            create_vm_instance_var_close = "]"
+            out_file=open(test_case_file_name_out + pyext, "a")
+            out_file.write(create_vm_instance_var_close+new_line)
+            for_vm_instance_var = 'for vm_to_create in vm_instances_create: '
+            vm_to_create_var='vm_to_create'
+            zone_creation_var=' --zone=northamerica-northeast1-a'
+            out_file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+            out_file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+            out_file.write(print_string+left_bracket+quote+'Attempting to create vm instances: '+quote+right_bracket+new_line)
+            out_file.write(for_vm_instance_var+new_line)
+            out_file.write("    "+print_string+left_bracket+quote+"Creating vm instance: "+quote+plus+vm_to_create_var+plus+quote+dots+quote+right_bracket+new_line)
+            out_file.write("    "+os_system+left_bracket+quote+gcloud_compute_create_vm_instance+quote+plus+vm_to_create_var+plus+quote+zone_creation_var+quote+right_bracket+new_line)
+            file.close()
+            os.remove(test_case_file_name+pyext)
+            rename_file=test_case_file_name_out+pyext
+            new_filename=test_case_file_name+pyext
+            os.rename(rename_file, new_filename)
+            print('\nAdded ' + step_string)
+        c9_2_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '10':
+        #DELETE MANY INSTANCES OF VMS
+        with open(test_case_file_name + pyext, 'a') as file:
+            def c10_build_python_case_file():
+                global step_string_var, step_string
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 10 - Delete vm instance"
+                delete_vm_instance=input('Provide a name to delete a vm instance. If more than one is needed, separate them  with spaces: ')
+                delete_vm_instance_var='vm_instances_delete=['
+                vm_instances_list=[]
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(delete_vm_instance_var)
+                for delete_vm in delete_vm_instance.split():
+                    vm_instances_list.append(delete_vm)
+                for vm_instance_deleted in vm_instances_list:
+                    file.write(quote+vm_instance_deleted+quote)
+            c10_build_python_case_file()
+        file.close()
+        def c10_2_build_python_case_file():
+            out = '_'
+            test_case_file_name_out = test_case_file_name + out
+            quotes = "''"
+            quotes_coma = "', '"
+            input_file = open(test_case_file_name + pyext, "rt")
+            # Open the output file
+            out_file = open(test_case_file_name_out + pyext, "wt")
+            # Iterate through the lines of the first file
+            for line in input_file:
+                # Write onto the output file.
+                out_file.write(line.replace(quotes, quotes_coma))
+            # Close both files.
+            input_file.close()
+            out_file.close()
+            delete_vm_instance_var_close = "]"
+            out_file=open(test_case_file_name_out + pyext, "a")
+            out_file.write(delete_vm_instance_var_close+new_line)
+            for_vm_instance_var = 'for vm_to_delete in vm_instances_delete: '
+            vm_to_delete_var='vm_to_delete'
+            zone_deletion_var=' --zone=northamerica-northeast1-a --quiet'
+            out_file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+            out_file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+            out_file.write(print_string+left_bracket+quote+'Attempting to delete vm instances: '+quote+right_bracket+new_line)
+            out_file.write(for_vm_instance_var+new_line)
+            out_file.write("    "+print_string+left_bracket+quote+"Deleting vm instance: "+quote+plus+vm_to_delete_var+plus+quote+dots+quote+right_bracket+new_line)
+            out_file.write("    "+os_system+left_bracket+quote+gcloud_compute_delete_vm_instance+quote+plus+vm_to_delete_var+plus+quote+zone_deletion_var+quote+right_bracket+new_line)
+            file.close()
+            os.remove(test_case_file_name+pyext)
+            rename_file=test_case_file_name_out+pyext
+            new_filename=test_case_file_name+pyext
+            os.rename(rename_file, new_filename)
+            print('\nAdded ' + step_string)
+        c10_2_build_python_case_file()
+        add_another_step_compute_menu()
 def test_case_module():
     def build_new_test_case():
         global new_test_case_input, test_case_string_var, test_case_file_name, pyext, new_line, random_id, id
@@ -267,7 +572,7 @@ def test_case_module():
             if test_case_menu_step == 'm':
                 create_case_main_menu()
             if test_case_menu_step == 'c':
-                compute_engine_module()
+                create_case_compute_menu()
             if test_case_menu_step == 'b':
                 test_case_module()
             else:
@@ -331,13 +636,50 @@ def test_case_module():
         except:
             invalid_file_provided()
 
-    print('Mode T accessed.\n')
+    def delete_cases():
+        test_case_string_var = "_tst_k_s_id_"
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        check_file = os.path.isfile(test_case_string_var)
+        print('\nNOTE: only test case files containing syntax: ' + test_case_string_var + ' will be removed.')
+        delete_test_cases=input("\nType the test case file to delete. If it is more than one, separate them with spaces: ")
+        cases_to_delete = []
+        for case in delete_test_cases.split():
+            cases_to_delete.append(case)
+        for case in cases_to_delete:
+            if test_case_string_var in case:
+                os.remove(case)
+                print('\nRemoved file: '+delete_test_cases)
+        input('\nPress enter to get back to the main menu: ')
+        test_case_module()
+
+    def delete_all_test_cases():
+        test_case_string_var = "_tst_k_s_"
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        delete_all=input('\nWARNING. You are about to delete all the test cases. Confirm? y/n: ')
+        if delete_all == 'y':
+            for case in os.listdir(path=dir_path):
+                if test_case_string_var in case:
+                    os.remove(case)
+                    print('\nRemoved test case: '+case)
+            enter=input('\nPress enter to get back to the main menu: ')
+            test_case_module()
+        if delete_all == 'n':
+            print('\nAborted deletion of all the test case files.')
+            input('\nPress enter to get back to the main menu: ')
+            test_case_module()
+        else:
+            delete_all_test_cases()
+
+
+    print('\nMode T accessed.\n')
     print("*******************************************")
     print('          TEST CASE MODULE MENU           \n')
     print('1 - Build a new test case')
     print('2 - Run test case/s')
-    print('3 - View saved test cases')
-    print('4 - Read test case steps from file')
+    print('3 - Delete test case file/s')
+    print('4 - Delete all test case files')
+    print('5 - View saved test cases')
+    print('6 - Read test case steps from file')
     print('c <- Compute engine module')
     print('b <- Back to Main menu')
     test_case_menu_selection=input('\nSelect an option from the menu and press enter: ')
@@ -346,8 +688,12 @@ def test_case_module():
     if test_case_menu_selection == '2':
         run_test_cases()
     if test_case_menu_selection == '3':
+        delete_cases()
+    if test_case_menu_selection == '4':
+        delete_all_test_cases()
+    if test_case_menu_selection == '5':
         view_test_cases()
-    if test_case_menu_selection == "4":
+    if test_case_menu_selection == "6":
         reading_steps_from_file()
     if test_case_menu_selection == 'c':
         from gcp_interactive_cli_v2 import compute_engine_module
@@ -356,4 +702,4 @@ def test_case_module():
     else:
         test_case_module()
 
-#test_case_module()
+
