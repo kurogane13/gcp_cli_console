@@ -277,6 +277,7 @@ def create_case_compute_menu():
     gcloud_compute_vm_instances_find='gcloud compute instances list --filter="name='
     gcloud_compute_vm_image_find='gcloud compute images list --filter="name='
     gcloud_compute_images_list='gcloud compute images list'
+    gcloud_compute_ssh_simmple='gcloud compute ssh '
     print("*******************************************")
     print('   GCP TEST CASE COMPUTE CREATION MENU   \n')
     print('1 - List zones')
@@ -412,6 +413,24 @@ def create_case_compute_menu():
                 file.close()
                 print('\nAdded ' + step_string)
             c7_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '8':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def c8_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 8 - SSH into vm only with vm name - simple mode"
+                ssh_to_vm=input('Provide a valid vm name to ssh into: ')
+                ssh_to_vm_var='ssh_to_vm'
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(ssh_to_vm_var+equals+quote+ssh_to_vm+quote+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Attempting to log in via ssh to vm: '+quote+plus+ssh_to_vm_var+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_ssh_simmple+quote+plus+ssh_to_vm_var+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+            c8_build_python_case_file()
         add_another_step_compute_menu()
 def test_case_module():
     def build_new_test_case():
