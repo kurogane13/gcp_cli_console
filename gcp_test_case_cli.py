@@ -410,7 +410,6 @@ def test_case_module():
         cases_to_delete = []
         for case in delete_test_cases.split():
             cases_to_delete.append(case)
-        print(cases_to_delete)
         for case in cases_to_delete:
             if test_case_string_var in case:
                 os.remove(case)
