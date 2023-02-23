@@ -337,7 +337,7 @@ def test_case_module():
             if test_case_menu_step == 'm':
                 create_case_main_menu()
             if test_case_menu_step == 'c':
-                compute_engine_module()
+                create_case_compute_menu()
             if test_case_menu_step == 'b':
                 test_case_module()
             else:
