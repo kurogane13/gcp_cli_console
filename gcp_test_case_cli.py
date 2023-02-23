@@ -279,6 +279,7 @@ def create_case_compute_menu():
     gcloud_compute_images_list='gcloud compute images list'
     gcloud_compute_ssh_simmple='gcloud compute ssh '
     gcloud_compute_create_vm_instance='gcloud compute instances create '
+    gcloud_compute_delete_vm_instance='gcloud compute instances delete '
     print("*******************************************")
     print('   GCP TEST CASE COMPUTE CREATION MENU   \n')
     print('1 - List zones')
@@ -485,6 +486,59 @@ def create_case_compute_menu():
             os.rename(rename_file, new_filename)
             print('\nAdded ' + step_string)
         c9_2_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '10':
+        #DELETE MANY INSTANCES OF VMS
+        with open(test_case_file_name + pyext, 'a') as file:
+            def c10_build_python_case_file():
+                global step_string_var, step_string
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 10 - Delete vm instance"
+                delete_vm_instance=input('Provide a name to delete a vm instance. If more than one is needed, separate them  with spaces: ')
+                delete_vm_instance_var='vm_instances_delete=['
+                vm_instances_list=[]
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(delete_vm_instance_var)
+                for delete_vm in delete_vm_instance.split():
+                    vm_instances_list.append(delete_vm)
+                for vm_instance_deleted in vm_instances_list:
+                    file.write(quote+vm_instance_deleted+quote)
+            c10_build_python_case_file()
+        file.close()
+        def c10_2_build_python_case_file():
+            out = '_'
+            test_case_file_name_out = test_case_file_name + out
+            quotes = "''"
+            quotes_coma = "', '"
+            input_file = open(test_case_file_name + pyext, "rt")
+            # Open the output file
+            out_file = open(test_case_file_name_out + pyext, "wt")
+            # Iterate through the lines of the first file
+            for line in input_file:
+                # Write onto the output file.
+                out_file.write(line.replace(quotes, quotes_coma))
+            # Close both files.
+            input_file.close()
+            out_file.close()
+            delete_vm_instance_var_close = "]"
+            out_file=open(test_case_file_name_out + pyext, "a")
+            out_file.write(delete_vm_instance_var_close+new_line)
+            for_vm_instance_var = 'for vm_to_delete in vm_instances_delete: '
+            vm_to_delete_var='vm_to_delete'
+            zone_deletion_var=' --zone=northamerica-northeast1-a --quiet'
+            out_file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+            out_file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+            out_file.write(print_string+left_bracket+quote+'Attempting to delete vm instances: '+quote+right_bracket+new_line)
+            out_file.write(for_vm_instance_var+new_line)
+            out_file.write("    "+print_string+left_bracket+quote+"Deleting vm instance: "+quote+plus+vm_to_delete_var+plus+quote+dots+quote+right_bracket+new_line)
+            out_file.write("    "+os_system+left_bracket+quote+gcloud_compute_delete_vm_instance+quote+plus+vm_to_delete_var+plus+quote+zone_deletion_var+quote+right_bracket+new_line)
+            file.close()
+            os.remove(test_case_file_name+pyext)
+            rename_file=test_case_file_name_out+pyext
+            new_filename=test_case_file_name+pyext
+            os.rename(rename_file, new_filename)
+            print('\nAdded ' + step_string)
+        c10_2_build_python_case_file()
         add_another_step_compute_menu()
 def test_case_module():
     def build_new_test_case():
