@@ -250,6 +250,7 @@ def compute_engine_module():
         print('\nVM instance creation mode accesed.\n')
         vm_instance_name=input('Provide the name/s of the vm instance/s to create: ')
         default_zone=' --zone=northamerica-northeast1-a'
+        print('\nAttempting to create vm instances: '+ vm_instance_name + "...")
         os.system('gcloud compute instances create '+vm_instance_name+default_zone)
         input('\nPress enter to get back to the main menu: ')
         compute_engine_module()
@@ -257,7 +258,9 @@ def compute_engine_module():
     def compute_delete_vm_instance():
         print('\nVM instance deletion mode accesed.\n')
         vm_instance_name=input('Provide the name/s of the vm instance/s to delete: ')
-        os.system('gcloud compute instances delete '+vm_instance_name)
+        delete_quiet=' --zone=northamerica-northeast1-a --quiet'
+        print('\nAttempting to delete vm instances: '+vm_instance_name+"...")
+        os.system('gcloud compute instances delete '+vm_instance_name+delete_quiet)
         input('\nPress enter to get back to the main menu: ')
         compute_engine_module()
 
