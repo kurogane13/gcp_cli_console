@@ -253,7 +253,7 @@ def create_case_main_menu():
         create_case_main_menu()
 
 def create_case_compute_menu():
-    global new_line, quote, pyext, print_string, right_bracket, left_bracket, import_os_module, import_sys_module, os_system, space, plus, test_case_file_name, equals, colons, running
+    global new_line, quote, pyext, print_string, right_bracket, left_bracket, import_os_module, import_sys_module, os_system, space, plus, test_case_file_name, equals, colons, running, double_quotes
     new_line = ('\n')
     quote = "'"
     pyext = ".py"
@@ -268,10 +268,13 @@ def create_case_compute_menu():
     equals = "="
     colon = ":"
     dots = "..."
+    double_quotes='"'
     running = "Running"
     gcloud_compute_list_zones='gcloud compute zones list'
     gcloud_compute_describe_zone='gcloud compute zones describe '
     gcloud_compute_instances_os_inventory_list_instances='gcloud compute instances os-inventory list-instances'
+    gcloud_compute_describe_vm_instance='gcloud compute instances os-inventory describe '
+    gcloud_compute_vm_instances_find='gcloud compute instances list --filter="name='
     print("*******************************************")
     print('   GCP TEST CASE COMPUTE CREATION MENU   \n')
     print('1 - List zones')
@@ -304,7 +307,6 @@ def create_case_compute_menu():
                 file.write(os_system+left_bracket+quote+gcloud_compute_list_zones+quote+right_bracket+new_line)
                 file.close()
                 print('\nAdded ' + step_string)
-
             m1_build_python_case_file()
         add_another_step_compute_menu()
     if selection == '2':
@@ -330,8 +332,6 @@ def create_case_compute_menu():
             def m3_build_python_case_file():
                 step_string_var = "step_string"
                 step_string = "Step: Compute menu: - 3 - List running vms - os-instances"
-                #zone_to_describe=input('Provide a valid zone name to describe: ')
-                zone_to_describe_var='zone_to_describe'
                 new_line = ('\n')
                 file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
                 file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
@@ -341,6 +341,42 @@ def create_case_compute_menu():
                 file.close()
                 print('\nAdded ' + step_string)
             m3_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '4':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def m4_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 4 - Describe a vm instance - os-instance"
+                vm_instance_to_describe=input('Provide a valid vm instance name to describe: ')
+                vm_instance_to_describe_var='vm_instance_description'
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(vm_instance_to_describe_var+equals+quote+vm_instance_to_describe+quote+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Describing vm instance: '+quote+plus+vm_instance_to_describe_var+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_describe_vm_instance+quote+plus+vm_instance_to_describe_var+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+            m4_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '5':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def m5_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 5 - Find a vm instance - os-instance"
+                vm_instance_to_find=input('Provide a valid vm instance name to find: ')
+                vm_instance_to_find_var='vm_instance_to_find'
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(vm_instance_to_find_var+equals+quote+vm_instance_to_find+quote+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Finding vm instance: '+quote+plus+vm_instance_to_find_var+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_vm_instances_find+vm_instance_to_find+double_quotes+quote+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+            m5_build_python_case_file()
         add_another_step_compute_menu()
 def test_case_module():
     def build_new_test_case():
