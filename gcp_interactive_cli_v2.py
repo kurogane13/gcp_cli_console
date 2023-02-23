@@ -249,14 +249,18 @@ def compute_engine_module():
     def compute_create_vm_instance():
         print('\nVM instance creation mode accesed.\n')
         vm_instance_name=input('Provide the name/s of the vm instance/s to create: ')
-        os.system('gcloud compute instances create '+vm_instance_name)
+        default_zone=' --zone=northamerica-northeast1-a'
+        print('\nAttempting to create vm instances: '+ vm_instance_name + "...")
+        os.system('gcloud compute instances create '+vm_instance_name+default_zone)
         input('\nPress enter to get back to the main menu: ')
         compute_engine_module()
 
     def compute_delete_vm_instance():
         print('\nVM instance deletion mode accesed.\n')
         vm_instance_name=input('Provide the name/s of the vm instance/s to delete: ')
-        os.system('gcloud compute instances delete '+vm_instance_name)
+        delete_quiet=' --zone=northamerica-northeast1-a --quiet'
+        print('\nAttempting to delete vm instances: '+vm_instance_name+"...")
+        os.system('gcloud compute instances delete '+vm_instance_name+delete_quiet)
         input('\nPress enter to get back to the main menu: ')
         compute_engine_module()
 
@@ -428,7 +432,6 @@ def compute_engine_module():
     print('14 - List instance templates')
     print('15 - Describe an instance template')
     print('a - > Advanced mode - requires more advanced knowledge')
-
     print('b - < Back to main menu')
     print('\n')
     compute_selection = input('Type a number or letter from the menu and press enter to operate: ')
