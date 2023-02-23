@@ -471,12 +471,13 @@ def create_case_compute_menu():
             out_file.write(create_vm_instance_var_close+new_line)
             for_vm_instance_var = 'for vm_to_create in vm_instances_create: '
             vm_to_create_var='vm_to_create'
+            zone_creation_var=' --zone=northamerica-northeast1-a'
             out_file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
             out_file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
             out_file.write(print_string+left_bracket+quote+'Attempting to create vm instances: '+quote+right_bracket+new_line)
             out_file.write(for_vm_instance_var+new_line)
             out_file.write("    "+print_string+left_bracket+quote+"Creating vm instance: "+quote+plus+vm_to_create_var+plus+quote+dots+quote+right_bracket+new_line)
-            out_file.write("    "+os_system+left_bracket+quote+gcloud_compute_create_vm_instance+quote+plus+vm_to_create_var+right_bracket+new_line)
+            out_file.write("    "+os_system+left_bracket+quote+gcloud_compute_create_vm_instance+quote+plus+vm_to_create_var+plus+quote+zone_creation_var+quote+right_bracket+new_line)
             file.close()
             os.remove(test_case_file_name+pyext)
             rename_file=test_case_file_name_out+pyext

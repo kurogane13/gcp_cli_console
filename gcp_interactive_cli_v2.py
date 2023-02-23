@@ -249,7 +249,8 @@ def compute_engine_module():
     def compute_create_vm_instance():
         print('\nVM instance creation mode accesed.\n')
         vm_instance_name=input('Provide the name/s of the vm instance/s to create: ')
-        os.system('gcloud compute instances create '+vm_instance_name)
+        default_zone=' --zone=northamerica-northeast1-a'
+        os.system('gcloud compute instances create '+vm_instance_name+default_zone)
         input('\nPress enter to get back to the main menu: ')
         compute_engine_module()
 
