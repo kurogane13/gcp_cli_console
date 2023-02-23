@@ -270,6 +270,7 @@ def create_case_compute_menu():
     dots = "..."
     running = "Running"
     gcloud_compute_list_zones='gcloud compute zones list'
+    gcloud_compute_describe_zone='gcloud compute zones describe '
     print("*******************************************")
     print('   GCP TEST CASE COMPUTE CREATION MENU   \n')
     print('1 - List zones')
@@ -304,6 +305,24 @@ def create_case_compute_menu():
                 print('\nAdded ' + step_string)
 
             m1_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '2':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def m2_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 2 - Describe specific zone"
+                zone_to_describe=input('Provide a valid zone name to describe: ')
+                zone_to_describe_var='zone_to_describe'
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(zone_to_describe_var+equals+quote+zone_to_describe+quote+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Describing zone: '+quote+plus+zone_to_describe_var+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_describe_zone+quote+plus+zone_to_describe_var+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+            m2_build_python_case_file()
         add_another_step_compute_menu()
 def test_case_module():
     def build_new_test_case():
