@@ -275,6 +275,7 @@ def create_case_compute_menu():
     gcloud_compute_instances_os_inventory_list_instances='gcloud compute instances os-inventory list-instances'
     gcloud_compute_describe_vm_instance='gcloud compute instances os-inventory describe '
     gcloud_compute_vm_instances_find='gcloud compute instances list --filter="name='
+    gcloud_compute_vm_image_find='gcloud compute images list --filter="name='
     print("*******************************************")
     print('   GCP TEST CASE COMPUTE CREATION MENU   \n')
     print('1 - List zones')
@@ -377,6 +378,24 @@ def create_case_compute_menu():
                 file.close()
                 print('\nAdded ' + step_string)
             m5_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '6':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def m6_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 6 - Find vm by image name"
+                vm_image_to_find=input('Provide a valid vm image name to find: ')
+                vm_image_to_find_var='vm_instance_to_find'
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(vm_image_to_find_var+equals+quote+vm_image_to_find+quote+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Finding vm image name: '+quote+plus+vm_image_to_find_var+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_vm_image_find+vm_image_to_find+double_quotes+quote+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+            m6_build_python_case_file()
         add_another_step_compute_menu()
 def test_case_module():
     def build_new_test_case():
