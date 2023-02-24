@@ -280,6 +280,8 @@ def create_case_compute_menu():
     gcloud_compute_ssh_simmple='gcloud compute ssh '
     gcloud_compute_create_vm_instance='gcloud compute instances create '
     gcloud_compute_delete_vm_instance='gcloud compute instances delete '
+    gcloud_compute_instance_templates_create='gcloud compute instance-templates create '
+    gcloud_compute_instance_templates_delete='gcloud compute instance-templates delete '
     print("*******************************************")
     print('   GCP TEST CASE COMPUTE CREATION MENU   \n')
     print('1 - List zones')
@@ -539,6 +541,43 @@ def create_case_compute_menu():
             os.rename(rename_file, new_filename)
             print('\nAdded ' + step_string)
         c10_2_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '11':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def c11_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 11 - Create an instance template"
+                create_instance_template=input('Provide a name to create the instance template: ')
+                create_instance_template_var='create_instance_template'
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(create_instance_template_var+equals+quote+create_instance_template+quote+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Creating instance template: '+quote+plus+create_instance_template_var+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_instance_templates_create+quote+plus+create_instance_template_var+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+            c11_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '12':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def c12_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 12 - Delete an instance template"
+                delete_instance_template=input('Provide the name of an existing instance template to delete: ')
+                delete_instance_template_var='delete_instance_template'
+                quiet_delete=" --quiet"
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(delete_instance_template_var+equals+quote+delete_instance_template+quote+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Deleting instance template: '+quote+plus+delete_instance_template_var+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_instance_templates_delete+quote+plus+delete_instance_template_var+plus+quote+quiet_delete+quote+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+            c12_build_python_case_file()
         add_another_step_compute_menu()
 def test_case_module():
     def build_new_test_case():
