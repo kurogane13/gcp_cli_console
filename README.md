@@ -12,7 +12,12 @@ To run the program: clone the repo, and run the latest version of the file: gcp_
  - Interactive gcloud main program: gcp_interactive_cli_v(<version_number_here>).py
  - Cli builder module: gcp_test_case_cli.py
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 
 >>>>>>> d460297d66fb2a038f16a3a6c237d43857573a50
+=======
+
+
+>>>>>>> 24ed10f8a878bfe7f5eaee67f1ebaa8131b192f5
