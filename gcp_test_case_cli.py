@@ -282,6 +282,9 @@ def create_case_compute_menu():
     gcloud_compute_delete_vm_instance='gcloud compute instances delete '
     gcloud_compute_instance_templates_create='gcloud compute instance-templates create '
     gcloud_compute_instance_templates_delete='gcloud compute instance-templates delete '
+    gcloud_compute_instance_templates_find='gcloud compute instance-templates list --filter="name='
+    box='[box]'
+    gcloud_format_box="' --format "+double_quotes+box+double_quotes
     print("*******************************************")
     print('   GCP TEST CASE COMPUTE CREATION MENU   \n')
     print('1 - List zones')
@@ -578,6 +581,24 @@ def create_case_compute_menu():
                 file.close()
                 print('\nAdded ' + step_string)
             c12_build_python_case_file()
+        add_another_step_compute_menu()
+    if selection == '13':
+        with open(test_case_file_name + pyext, 'a') as file:
+            def c13_build_python_case_file():
+                step_string_var = "step_string"
+                step_string = "Step: Compute menu: - 13 - Find an instance template"
+                instance_template_to_find=input('Provide a valid instance template name to find: ')
+                instance_template_to_find_var='instance_template_to_find'
+                new_line = ('\n')
+                file.write(new_line+step_string_var+equals+quote+step_string+quote+new_line)
+                file.write(print_string+left_bracket+quote+quote+right_bracket+new_line)
+                file.write(instance_template_to_find_var+equals+quote+instance_template_to_find+quote+new_line)
+                file.write(print_string+left_bracket+quote+running+space+quote+plus+step_string_var+plus+quote+dots+quote+right_bracket+new_line)
+                file.write(print_string+left_bracket+quote+'Finding instance template name: '+quote+plus+instance_template_to_find_var+right_bracket+new_line)
+                file.write(os_system+left_bracket+quote+gcloud_compute_instance_templates_find+quote+plus+instance_template_to_find_var+plus+gcloud_format_box+double_quotes+quote+right_bracket+new_line)
+                file.close()
+                print('\nAdded ' + step_string)
+            c13_build_python_case_file()
         add_another_step_compute_menu()
 def test_case_module():
     def build_new_test_case():
