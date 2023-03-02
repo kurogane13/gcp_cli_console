@@ -1,4 +1,3 @@
-import imp
 import os
 import runpy
 import sys
@@ -7,7 +6,14 @@ import importlib
 from datetime import datetime
 
 gcp_scripts_dir='gcp_automation_test_scripts'
-os.system('mkdir -p gcp_automation_test_scripts')
+
+def return_to_main_menu():
+    from gcp_interactive_cli_v2 import main_menu
+    main_menu()
+
+def return_to_compute_menu():
+    from gcp_interactive_cli_v2 import compute_engine_module
+    compute_engine_module()
 
 def select_menu():
     print('\n- m - Main menu')
@@ -638,6 +644,7 @@ def create_case_compute_menu():
                 print('\nAdded ' + step_string)
             c15_build_python_case_file()
         add_another_step_compute_menu()
+
 def test_case_module():
     def build_new_test_case():
         global new_test_case_input, test_case_string_var, test_case_file_name, pyext, new_line, random_id, id
@@ -701,8 +708,6 @@ def test_case_module():
         for i in os.listdir(path=dir_path+"/"+gcp_scripts_dir):
             if test_case_string_var in i:
                 print(i)
-        #if not test_case_string_var in i:
-        #    print('\nNo test cases where found in path: '+dir_path)
         input('\nPress enter to get back to the main menu: ')
         test_case_module()
 
@@ -736,8 +741,6 @@ def test_case_module():
 
     def delete_cases():
         test_case_string_var = "_tst_k_s_id_"
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        check_file = os.path.isfile(test_case_string_var)
         print('\nNOTE: only test case files containing syntax: ' + test_case_string_var + ' will be removed.')
         delete_test_cases=input("\nType the test case file to delete. If it is more than one, separate them with spaces: ")
         cases_to_delete = []
@@ -794,10 +797,11 @@ def test_case_module():
     if test_case_menu_selection == "6":
         reading_steps_from_file()
     if test_case_menu_selection == 'c':
-        from gcp_interactive_cli_v2 import compute_engine_module
+        return_to_compute_menu()
     if test_case_menu_selection == 'b':
-        from gcp_interactive_cli_v2 import main_menu
+        return_to_main_menu()
     else:
         test_case_module()
+
 
 

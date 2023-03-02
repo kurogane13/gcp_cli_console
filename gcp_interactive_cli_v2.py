@@ -1,7 +1,17 @@
 
 import os
+import runpy
 import sys
-from gcp_test_case_cli import test_case_module
+
+def test_case_module_menu():
+    from gcp_test_case_cli import test_case_module
+    test_case_module()
+def free_command_input_menu():
+    from gcp_cli_input_scripts import free_command_input
+    free_command_input()
+
+gcp_scripts_dir='gcp_automation_test_scripts'
+os.system('mkdir -p '+gcp_scripts_dir)
 
 byoid_project='byoid-ui-testing-project'
 
@@ -413,7 +423,6 @@ def compute_engine_module():
             input('\nInvalid option selected, you must type a number or letter from the menu. Press enter to get back to the menu: ')
             compute_advanced_module()
 
-
     print("*******************************************")
     print('          COMPUTE ENGINE MODULE           \n')
     print('1 - List zones')
@@ -483,6 +492,7 @@ def main_menu():
 
     print("*******************************************")
     print('        GCP PYTHON TESTING CONSOLE         \n')
+    print('WELCOME, YOU ARE IN THE MAIN MENU\n')
     print('1 - Retrieve billing data for default project: byoid-ui-testing-project')
     print('2 - Retrieve billing data for another project')
     print('3 - Describe project: '+byoid_project)
@@ -497,7 +507,8 @@ def main_menu():
     print('a - Interactive alpha gcloud command line')
     print('u - Update gcloud console components')
     print('c - Compute module')
-    print('t - test case builder')
+    print('t - Test case builder')
+    print('f - Free command line input - advanced script module. Requires knowledge on gcloud cli.')
     print('\n')
     selection=input('Type a number or letter from the menu and press enter to operate: ')
     if selection == '1':
@@ -523,13 +534,15 @@ def main_menu():
     if selection == 'a':
         alpha_interactive_cli()
     if selection == 't':
-        test_case_module()
+        test_case_module_menu()
     if selection == 'c':
         compute_engine_module()
     if selection == 'u':
         update_gcloud()
     if selection == 'l':
         login_account()
+    if selection == 'f':
+        free_command_input_menu()
     else:
          #input('\nInvalid option selected, you must type a number or letter from the menu. Press enter to get back to main menu: ')
          main_menu()
