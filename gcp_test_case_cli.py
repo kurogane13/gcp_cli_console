@@ -51,6 +51,12 @@ def timestamp():
     print("\nTest case termination timestamp: "+str(now))
 
 def create_case_main_menu():
+    global gcp_system_log_file
+    gcp_system_log_file = 'gcp_system_log.log'
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Accessed TEST CASE CREATION MAIN MENU\n")
+        logfile.close()
     global new_line, quote, pyext, print_string, right_bracket, left_bracket, import_os_module, import_sys_module, os_system, space, plus, test_case_file_name, equals, colons, running
     new_line=('\n')
     quote="'"
@@ -313,8 +319,7 @@ def create_case_compute_menu():
     print('13 - Find an instance template')
     print('14 - List instance templates')
     print('15 - Describe an instance template')
-    selection = input(
-        '\nPlease provide the action item you want to add to the test case.\nType a number or letter from the menu and press enter to operate: ')
+    selection = input('\nPlease provide the action item you want to add to the test case.\nType a number or letter from the menu and press enter to operate: ')
     if selection == '1':
         with open(gcp_scripts_dir+"/"+test_case_file_name+pyext, 'a') as file:
             def c1_build_python_case_file():
@@ -646,6 +651,11 @@ def create_case_compute_menu():
         add_another_step_compute_menu()
 
 def test_case_module():
+    now = datetime.now()
+    gcp_system_log_file = 'gcp_system_log.log'
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Accessed TEST CASE MODULE MENU\n")
+        logfile.close()
     def build_new_test_case():
         global new_test_case_input, test_case_string_var, test_case_file_name, pyext, new_line, random_id, id
         test_case_string_var="_tst_k_s_"
@@ -799,6 +809,10 @@ def test_case_module():
     if test_case_menu_selection == 'c':
         return_to_compute_menu()
     if test_case_menu_selection == 'b':
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited TEST CASE MODULE MENU\n")
+            logfile.close()
         return_to_main_menu()
     else:
         test_case_module()

@@ -1,7 +1,10 @@
-
 import os
 import runpy
 import sys
+import datetime
+from datetime import datetime
+
+now=datetime.now()
 
 def test_case_module_menu():
     from gcp_test_case_cli import test_case_module
@@ -61,7 +64,6 @@ def get_active_project():
     main_menu()
 
 def set_byoid():
-
     print('- Mode 7 accessed.\n')
     print("\nSetting up project: "+byoid_project+'\n')
     os.system('gcloud config set project '+byoid_project)
@@ -193,139 +195,341 @@ def login_account():
             account_types()
     account_types()
 
-
 def compute_engine_module():
     def compute_zones():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE ZONES LIST mode\n")
+            logfile.close()
         print("\nCompute zones mode accessed.\n")
         print('Listing compute zones...  \n')
         os.system('gcloud compute zones list')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " - Executed command: gcloud compute zones list\n")
+            logfile.close()
         input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE ZONES LIST mode\n")
+            logfile.close()
         compute_engine_module()
 
     def compute_zone_describe():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE ZONES DESCRIBE mode\n")
+            logfile.close()
         print("\nCompute zones describe mode accessed.\n")
         describe_zone=input('Provide a valid zone to describe:  ')
         box_format = ' --format "[box]"'
         os.system('\ngcloud compute zones describe '+describe_zone+box_format)
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " - Executed command: gcloud compute zones describe "+describe_zone+box_format+"\n")
+            logfile.close()
         input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE ZONES DESCRIBE mode\n")
+            logfile.close()
         compute_engine_module()
 
     def compute_list_running_os_instances():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE LIST RUNNING OS INSTANCES mode\n")
+            logfile.close()
         print("\nList running os instances mode accessed.\n")
         os.system('\ngcloud compute instances os-inventory list-instances')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " - Executed command: gcloud compute instances os-inventory list-instances\n")
+            logfile.close()
         input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE LIST RUNNING OS INSTANCES mode\n")
+            logfile.close()
         compute_engine_module()
 
     def compute_describe_runnning_os_instances():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE DESCRIBE RUNNING OS INSTANCES mode\n")
+            logfile.close()
         print("\nDescribe running vm os instance mode accessed.\n")
         describe_running_os=input('Provide a valid vm name to describe the os instance: ')
         os.system('\ngcloud compute instances os-inventory describe '+describe_running_os)
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " - Executed command: gcloud compute instances os-inventory describe "+describe_running_os+"\n")
+            logfile.close()
         input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE DESCRIBE RUNNING OS INSTANCES mode\n")
+            logfile.close()
         compute_engine_module()
 
     def compute_zone_filter():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE FIND VM mode\n")
+            logfile.close()
         filter_name_zone = input('\nProvide a valid vm name to find:  ')
         compute_filter='gcloud compute instances list --filter="name='
         quote='"'
         box_format=' --format "[box]"'
         os.system(compute_filter+filter_name_zone+quote+box_format)
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(
+                str(now) + " - Executed command: gcloud compute instances list "+'--filter="name='+filter_name_zone+quote+box_format+"\n")
+            logfile.close()
         input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE FIND VM mode\n")
+            logfile.close()
         compute_engine_module()
 
     def compute_list_images():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE LIST IMAGES mode\n")
+            logfile.close()
         print('Listing compute images...  \n')
         os.system('gcloud compute images list')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(
+                str(now) + " - Executed command: gcloud compute images list\n")
+            logfile.close()
         input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE LIST IMAGES mode\n")
+            logfile.close()
         compute_engine_module()
 
     def compute_vm_name():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE FIND VM IMAGE mode\n")
+            logfile.close()
         filter_vm_name = input('\nProvide a valid vm image name to find:  ')
         compute_filter = 'gcloud compute images list --filter="name='
         quote = '"'
         box_format = ' --format "[box]"'
         os.system(compute_filter + filter_vm_name + quote + box_format)
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " - Executed command: gcloud compute images list " + '--filter="name=' + filter_vm_name + quote + box_format + "\n")
+            logfile.close()
         input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE FIND VM IMMAGE mode\n")
+            logfile.close()
         compute_engine_module()
 
     def compute_ssh_vm_simple():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE SSH VM SIMPLE mode\n")
+            logfile.close()
         print('\nSSH vm simple mode accesed.\n')
         vm_name = input("Provide the Vm instance name to connect to: ")
         print("\nAttempting to connect to vm instance...")
         ssh_vm_instance_simple='gcloud compute ssh '+vm_name
         os.system(ssh_vm_instance_simple)
-        input('\nPress enter to get back to the main menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(
+                str(now) + " - Executed command: gcloud compute ssh "+vm_name+"\n")
+            logfile.close()
+        input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE SSH VM SIMPLE mode\n")
+            logfile.close()
         compute_engine_module()
 
     def compute_create_vm_instance():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE CREATE VM INSTANCE mode\n")
+            logfile.close()
         print('\nVM instance creation mode accesed.\n')
         vm_instance_name=input('Provide the name/s of the vm instance/s to create: ')
         default_zone=' --zone=northamerica-northeast1-a'
         print('\nAttempting to create vm instances: '+ vm_instance_name + "...")
         os.system('gcloud compute instances create '+vm_instance_name+default_zone)
-        input('\nPress enter to get back to the main menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " - Executed command: gcloud compute instances create "+vm_instance_name+default_zone+"\n")
+            logfile.close()
+        input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE CREATE VM INSTANCE mode\n")
+            logfile.close()
         compute_engine_module()
 
     def compute_delete_vm_instance():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE DELETE VM INSTANCE mode\n")
+            logfile.close()
         print('\nVM instance deletion mode accesed.\n')
         vm_instance_name=input('Provide the name/s of the vm instance/s to delete: ')
         delete_quiet=' --zone=northamerica-northeast1-a --quiet'
         print('\nAttempting to delete vm instances: '+vm_instance_name+"...")
         os.system('gcloud compute instances delete '+vm_instance_name+delete_quiet)
-        input('\nPress enter to get back to the main menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " - Executed command: gcloud compute instances delete " + vm_instance_name + default_zone + "\n")
+            logfile.close()
+        input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE DELETE VM INSTANCE mode\n")
+            logfile.close()
         compute_engine_module()
 
     def compute_create_instance_template():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE CREATE INSTANCE TEMPLATE mode\n")
+            logfile.close()
         print('\nInstance template creation mode accesed.\n')
         instance_template_name_create = input('Provide the name of the instance template to create: ')
         os.system('gcloud compute instance-templates create '+instance_template_name_create)
-        input('\nPress enter to get back to the main menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(
+                str(now) + " - Executed command: gcloud instance-templates create "+instance_template_name_create+"\n")
+            logfile.close()
+        input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE CREATE INSTANCE TEMPLATE mode\n")
+            logfile.close()
         compute_engine_module()
 
     def compute_delete_instance_template():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE DELETE INSTANCE TEMPLATE mode\n")
+            logfile.close()
         print('\nInstance template deletion mode accesed.\n')
         instance_template_name_delete = input('Provide the name of the instance template to delete: ')
         os.system('gcloud compute instance-templates delete '+instance_template_name_delete)
-        input('\nPress enter to get back to the main menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(
+                str(now) + " - Executed command: gcloud instance-templates delete "+instance_template_name_delete+"\n")
+            logfile.close()
+        input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE DELETE INSTANCE TEMPLATE mode\n")
+            logfile.close()
         compute_engine_module()
 
     def compute_list_instance_template():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE LIST INSTANCE TEMPLATE mode\n")
+            logfile.close()
         print('\nInstance template listing mode accesed.\n')
         print('Listing instance templates...  \n')
         os.system('gcloud compute instance-templates list')
-        input('\nPress enter to get back to the main menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(
+                str(now) + " - Executed command: gcloud compute instance-templates list\n")
+            logfile.close()
+        input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE LIST INSTANCE TEMPLATE mode\n")
+            logfile.close()
         compute_engine_module()
 
     def compute_find_instance_template():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE FIND INSTANCE TEMPLATE mode\n")
+            logfile.close()
         print('\nInstance template finding mode accesed.\n')
         instance_template_find_name = input('Provide the name of the instance template to find: ')
         quote='"'
         os.system('gcloud compute instance-templates list --filter="name='+instance_template_find_name+quote+' --format "[box]"')
-        input('\nPress enter to get back to the main menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " - Executed command: gcloud compute images list " + '--filter="name=' + instance_template_find_name + quote + box_format + "\n")
+            logfile.close()
+        input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE FIND INSTANCE TEMPLATE mode\n")
+            logfile.close()
         compute_engine_module()
 
     def compute_describe_instance_template():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE DESCRIBE INSTANCE TEMPLATE mode\n")
+            logfile.close()
         print('\nInstance template description mode accesed.\n')
         instance_template_describe_name = input('Provide the name of the instance template to describe: ')
         os.system('gcloud compute instance-templates describe '+instance_template_describe_name)
-        input('\nPress enter to get back to the main menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " - Executed command: gcloud -templates describe "+instance_template_describe_name+"\n")
+            logfile.close()
+        input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE DESCRIBE INSTANCE TEMPLATE mode\n")
+            logfile.close()
         compute_engine_module()
-
     def compute_advanced_module():
-
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed ADVANCED COMPUTE MODULE menu\n")
+            logfile.close()
         def compute_ssh_vm_advanced():
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Accessed SSH VM ADVANCED COMPUTE MODULE menu\n")
+                logfile.close()
             print('\nSSH vm advanced mode accesed.\n')
             zone = input("Vm instance zone name: ")
             vm_name = input("\nVm instance name: ")
             username = input("\nGCP account name: ")
             project_name = input("\nProject name: ")
             print("\nAttempting to connect to vm instance...")
-            ssh_vm_instance = 'gcloud compute ssh ' + username + "@" + vm_name + str(' --zone ') + '"' + str(
-                zone) + '"' + str(' --project ') + '"' + project_name + '"'
+            ssh_vm_instance = 'gcloud compute ssh ' + username + "@" + vm_name + str(' --zone ') + '"' + str(zone) + '"' + str(' --project ') + '"' + project_name + '"'
             os.system(ssh_vm_instance)
-            input('\nPress enter to get back to the main menu: ')
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " - Executed command: gcloud compute ssh " + username + "@" + vm_name + str(' --zone ') + '"' + str(zone) + '"' + str(' --project ') + '"' + project_name + "\n")
+                logfile.close()
+            input('\nPress enter to get back to the compute engine menu: ')
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " <-- Exited SSH VM ADVANCED COMPUTE mode\n")
+                logfile.close()
             compute_advanced_module()
 
         def compute_create_custom_vm():
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Accessed CREATE CUSTOM VM menu\n")
+                logfile.close()
             print('\nCreate custom vm mode accesed.\n')
             print('To operate with this module you need to pass the following parammters to successfully create the vm:\n')
             print('- Vm name')
@@ -380,11 +584,19 @@ def compute_engine_module():
                                         if confirm_correct_provided_data == 'y':
                                             print('Attemping to create the vm with the provided data...\n')
                                             os.system('gcloud compute instances create '+vm_name+' --image-family='+image_family+' --image-project='+image_project+' --machine-type='+machine_type+'-custom-'+cpus_amount+'-'+ram_amount)
-                                            input('\nPress enter to get back to compute advanced module. ')
+                                            now = datetime.now()
+                                            with open(gcp_system_log_file, 'a') as logfile:
+                                                logfile.write(str(now) + " - Executed command: gcloud compute instances create "+vm_name+' --image-family='+image_family+' --image-project='+image_project+' --machine-type='+machine_type+'-custom-'+cpus_amount+'-'+ram_amount+"\n")
+                                                logfile.close()
+                                                input('\nPress enter to get back to the compute advanced engine menu: ')
+                                                now = datetime.now()
+                                                with open(gcp_system_log_file, 'a') as logfile:
+                                                    logfile.write(str(now) + " <-- Exited CREATE CUSTOM VM mode\n")
+                                                logfile.close()
                                             compute_advanced_module()
                                         if confirm_correct_provided_data == 'n':
                                             print('\nYou decided to abort the operation by confirming incorrect data.\n')
-                                            input('Press enter to get bacck to the compute advanced module...  ')
+                                            input('Press enter to get back to the compute advanced module...  ')
                                             compute_advanced_module()
                                         if confirm_correct_provided_data == 'a':
                                             compute_advanced_module()
@@ -483,13 +695,22 @@ def compute_engine_module():
         compute_engine_module()
 
 def update_gcloud():
+    now=datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now)+" --> Accessed UPDATE GCLOUD menu\n")
+        logfile.close()
     print('Mode U accesed. gcloud cli update\n')
     os.system('gcloud components update')
     input('\nPress enter to get back to the main menu: ')
     main_menu()
 
 def main_menu():
-
+    now=datetime.now()
+    global gcp_system_log_file
+    gcp_system_log_file='gcp_system_log.log'
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now)+" --> Accessed GCP PYTHON TESTING CONSOLE main menu\n")
+        logfile.close()
     print("*******************************************")
     print('        GCP PYTHON TESTING CONSOLE         \n')
     print('WELCOME, YOU ARE IN THE MAIN MENU\n')
