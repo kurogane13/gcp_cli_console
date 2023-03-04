@@ -704,6 +704,88 @@ def update_gcloud():
     input('\nPress enter to get back to the main menu: ')
     main_menu()
 
+def system_logs_events():
+    now=datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now)+" --> Accessed SYSTEM LOG FILE menu\n")
+        logfile.close()
+    gcp_logs_file='gcp_system_log.log'
+    print('Mode S accesed. System and events loger\n')
+    print('************************************************\n')
+    print('           GCP CLI EVENT LOGGING MODE           \n')
+    print('1 - View system and events log file ')
+    print('2 - Find regular expresion in the logs file')
+    print('3 - Delete the log file')
+    print('b - < Back to main menu')
+    system_log_select=input("\nType an option from the menu and press enter: ")
+    if system_log_select=="1":
+        now=datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now)+" --> Accessed SYSTEM LOG FILE Viewing mode. You are now viewing the logs file\n")
+            logfile.close()
+        input('\nGCP cli log file viewing mode accessed. Press enter to view the log file: \n')
+        openfile = open(gcp_logs_file, 'r')
+        print(openfile.read())
+        openfile.close()
+        input('\nPress enter to get back to the main menu: ')
+        now=datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now)+" <-- Exited SYSTEM LOG FILE Viewing mode. You are now viewing the logs file\n")
+            logfile.close()
+    if system_log_select=="2":
+        now=datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now)+" --> Accessed SYSTEM LOG FILE Regexp mode. You are now viewing the logs file\n")
+            logfile.close()
+        regexp=input("\nPlease type the regular expresion you want to find in the log file: ")
+        print("\nShowing regexp: '"+regexp+"', in logfile file: "+'\n')
+        with open(gcp_logs_file, 'r') as filedata:     # Opening the given file in read-only mode
+           for line in filedata:
+                if regexp in line:
+                    print(line)
+        filedata.close()
+        input('\nPress enter to get back to the main menu: ')
+        now=datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now)+" <-- Exited SYSTEM LOG FILE Regexp mode.\n")
+            logfile.close()
+        system_logs_events()
+    if system_log_select=="3":
+        def delete_log_file():
+            now=datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now)+" --> Accessed SYSTEM LOG FILE DELETION mode. You are now viewing the logs file\n")
+                logfile.close()
+            delete_logfile=input("\nWARNING: You are about to delete the GCP cli logs and events from the system. Proceed?. y/n?: ")
+            if delete_logfile=="y":
+                print("\nRemoving the "+gcp_logs_file+" log file from the system...")
+                os.remove(gcp_logs_file)
+                input('\nPress enter to get back to the main menu: ')
+                now=datetime.now()
+                with open(gcp_system_log_file, 'a') as logfile:
+                    logfile.write(str(now)+" <-- Exited SYSTEM LOG FILE DELETION mode\n")
+                    logfile.close()
+                system_logs_events()
+            if delete_logfile=="n":
+                print("\nYou decided not to delete the log file from the system.")
+                input('\nPress enter to get back to the main menu: ')
+                with open(gcp_system_log_file, 'a') as logfile:
+                    logfile.write(str(now)+" <-- Exited SYSTEM LOG FILE DELETION mode\n")
+                    logfile.close()
+                system_logs_events()
+            else:
+                input("\nOnly type either 'y' or 'n'. Press enter to get back to the prompt: ")
+                delete_log_file()
+        delete_log_file()
+    if system_log_select=="b":
+        now=datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now)+" <-- Exited SYSTEM LOG FILE menu\n")
+            logfile.close()
+        main_menu()
+    else:
+        system_logs_events()
+
 def main_menu():
     now=datetime.now()
     global gcp_system_log_file
@@ -730,6 +812,7 @@ def main_menu():
     print('c - Compute module')
     print('t - Test case builder')
     print('f - Free command line input - advanced script module. Requires knowledge on gcloud cli.')
+    print('s - System logs and events mode')
     print('\n')
     selection=input('Type a number or letter from the menu and press enter to operate: ')
     if selection == '1':
@@ -764,6 +847,8 @@ def main_menu():
         login_account()
     if selection == 'f':
         free_command_input_menu()
+    if selection == 's':
+        system_logs_events()
     else:
          #input('\nInvalid option selected, you must type a number or letter from the menu. Press enter to get back to main menu: ')
          main_menu()
