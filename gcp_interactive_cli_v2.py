@@ -19,88 +19,215 @@ os.system('mkdir -p '+gcp_scripts_dir)
 byoid_project='byoid-ui-testing-project'
 
 def check_billing_byoid():
-
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Accessed DESCRIBE BYOID PROJECT BILLING DATA mode\n")
+        logfile.close()
     print('- Mode 1 accessed.\n')
     print("Retrieving billing data for project name: "+byoid_project+'\n')
     os.system('gcloud beta billing projects describe '+byoid_project)
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " - Executed command: gcloud beta billing projects describe " +byoid_project+ "\n")
+        logfile.close()
     input('\nOperation executed. Press enter to get back to main menu: ')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Exited DESCRIBE BYOID PROJECT BILLING DATA mode\n")
+        logfile.close()
     main_menu()
 
 def check_billing_project():
-
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Accessed DESCRIBE PROJECT BILLING DATA mode\n")
+        logfile.close()
     print('- Mode 2 accessed.\n')
     project_name=input('Provide a valid project name and press enter: ')
     print("\nRetrieving billing data for project name: "+project_name+'\n')
     os.system('gcloud beta billing projects describe '+project_name)
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " - Executed command: gcloud beta billing projects describe " +project_name+ "\n")
+        logfile.close()
     input('\nOperation executed. Press enter to get back to main menu: ')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Exited DESCRIBE PROJECT BILLING DATA mode\n")
+        logfile.close()
     main_menu()
 
 def describe_byoid_project():
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Accessed DESCRIBE PROJECT BYOID mode\n")
+        logfile.close()
     print('- Mode 3 Accessed\n')
     print('Describing project: '+byoid_project)
     os.system('gcloud projects describe '+byoid_project)
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " - Executed command: gcloud projects describe " +byoid_project+ "\n")
+        logfile.close()
     input('\nOperation executed. Press enter to get back to main menu: ')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Exited DESCRIBE PROJECT BYOID mode\n")
+        logfile.close()
     main_menu()
 
 def describe_specific_project():
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Accessed DESCRIBE PROJECT mode\n")
+        logfile.close()
     print('- Mode 4 Accessed\n')
     project_to_describe=input('Type a project name to describe it: ')
     os.system('gcloud projects describe '+project_to_describe)
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " - Executed command: gcloud projects describe "+project_to_describe+"\n")
+        logfile.close()
     input('\nOperation executed. Press enter to get back to main menu: ')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Exited DESCRIBE PROJECT mode\n")
+        logfile.close()
     main_menu()
 
 def get_cconfigurations_list():
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Accessed GET CONFIGURATION LIST mode\n")
+        logfile.close()
     print('- Mode 5 Accessed\n')
     print('Getting configuration list...\n')
     os.system('gcloud config configurations list')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " - Executed command: gcloud config configurations list\n")
+        logfile.close()
     input('\nOperation executed. Press enter to get back to main menu: ')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Exited GET CONFIGURATION LIST mode\n")
+        logfile.close()
     main_menu()
 
 def get_active_project():
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Accessed GET ACTIVE PROJECT mode\n")
+        logfile.close()
     print('- Mode 6 accessed.\n')
     print('Active project is: \n')
     os.system('gcloud config get-value project')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " - Executed command: gcloud config get-value project"+"\n")
+        logfile.close()
     input('\nOperation executed. Press enter to get back to main menu: ')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Exited GET ACTIVE PROJECT mode\n")
+        logfile.close()
     main_menu()
 
 def set_byoid():
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Accessed SET BYOID PROJECT mode\n")
+        logfile.close()
     print('- Mode 7 accessed.\n')
     print("\nSetting up project: "+byoid_project+'\n')
     os.system('gcloud config set project '+byoid_project)
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " - Executed command: config set project "+byoid_project+"\n")
+        logfile.close()
     input('\nOperation executed. Press enter to get back to main menu: ')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Exited SET BYOID PROJECT mode\n")
+        logfile.close()
     main_menu()
 
 def set_project():
     print('- Mode 8 accessed.\n')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Accessed LIST ALL PROJECTS mode\n")
+        logfile.close()
     project_name=input('Provide a valid project name to set up, and press enter: ')
     print("\nSetting up project: "+project_name+'\n')
     os.system('gcloud config set project '+project_name)
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " - Executed command: gcloud config set project "+project_name+"\n")
+        logfile.close()
     input('\nOperation executed. Press enter to get back to main menu: ')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Exited LIST ALL PROJECTS mode\n")
+        logfile.close()
     main_menu()
 
 def get_all_projects():
     print('- Mode 9 accessed.\n')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Accessed LIST ALL PROJECTS mode\n")
+        logfile.close()
     print('Listing all projects....\n')
     os.system('gcloud projects list')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " - Executed command: gcloud projects list\n")
+        logfile.close()
     input('\nOperation executed. Press enter to get back to main menu: ')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Exited LIST ALL PROJECTS mode\n")
+        logfile.close()
     main_menu()
 
 def get_all_organizations():
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Accessed LIST ALL ORGANIZATIONS mode\n")
+        logfile.close()
     print('- Mode 10 accessed.\n')
     print('Listing all organizations....\n')
     os.system('gcloud organizations list')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " - Executed command: gcloud organizations list\n")
+        logfile.close()
     input('\nOperation executed. Press enter to get back to main menu: ')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Exited LIST ALL ORGANIZATIONS mode\n")
+        logfile.close()
     main_menu()
 
 def alpha_interactive_cli():
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Accessed ALPHA INTERACTIVE mode\n")
+        logfile.close()
     print('Mode A accessed.\n')
     print("You have accessed the alpha gcloud cli interactive mode. Once inside the console, to exit, type exit and enter.")
     input("\nPress enter to access the interactive console now:  ")
     os.system('gcloud alpha interactive')
     input('\nPress enter to get back to the main menu: ')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Exited ALPHA INTERACTIVE menu\n")
+        logfile.close()
     main_menu()
 
 def login_account():
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Accessed LOGIN menu\n")
+        logfile.close()
     print('Mode L accessed.\n')
     print('\nAccount login/switch mode.\n')
     def account_types():
@@ -190,6 +317,10 @@ def login_account():
             account_types()
         if selection == 'b':
             input('\nYou decided to go back to the main menu. Press enter to get back there: ')
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Exited LOGIN menu\n")
+                logfile.close()
             main_menu()
         else:
             account_types()
@@ -702,6 +833,10 @@ def update_gcloud():
     print('Mode U accesed. gcloud cli update\n')
     os.system('gcloud components update')
     input('\nPress enter to get back to the main menu: ')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Exited UPDATE GCLOUD menu\n")
+        logfile.close()
     main_menu()
 
 def system_logs_events():
