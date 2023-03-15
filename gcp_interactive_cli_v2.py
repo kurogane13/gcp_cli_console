@@ -32,7 +32,7 @@ def check_billing_byoid():
     input('\nOperation executed. Press enter to get back to main menu: ')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
-        logfile.write(str(now) + " --> Exited DESCRIBE BYOID PROJECT BILLING DATA mode\n")
+        logfile.write(str(now) + " <-- Exited DESCRIBE BYOID PROJECT BILLING DATA mode\n")
         logfile.close()
     main_menu()
 
@@ -51,7 +51,7 @@ def check_billing_project():
     input('\nOperation executed. Press enter to get back to main menu: ')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
-        logfile.write(str(now) + " --> Exited DESCRIBE PROJECT BILLING DATA mode\n")
+        logfile.write(str(now) + " <-- Exited DESCRIBE PROJECT BILLING DATA mode\n")
         logfile.close()
     main_menu()
 
@@ -69,7 +69,7 @@ def describe_byoid_project():
     input('\nOperation executed. Press enter to get back to main menu: ')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
-        logfile.write(str(now) + " --> Exited DESCRIBE PROJECT BYOID mode\n")
+        logfile.write(str(now) + " <-- Exited DESCRIBE PROJECT BYOID mode\n")
         logfile.close()
     main_menu()
 
@@ -88,7 +88,7 @@ def describe_specific_project():
     input('\nOperation executed. Press enter to get back to main menu: ')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
-        logfile.write(str(now) + " --> Exited DESCRIBE PROJECT mode\n")
+        logfile.write(str(now) + " <-- Exited DESCRIBE PROJECT mode\n")
         logfile.close()
     main_menu()
 
@@ -107,7 +107,7 @@ def get_cconfigurations_list():
     input('\nOperation executed. Press enter to get back to main menu: ')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
-        logfile.write(str(now) + " --> Exited GET CONFIGURATION LIST mode\n")
+        logfile.write(str(now) + " <-- Exited GET CONFIGURATION LIST mode\n")
         logfile.close()
     main_menu()
 
@@ -126,7 +126,7 @@ def get_active_project():
     input('\nOperation executed. Press enter to get back to main menu: ')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
-        logfile.write(str(now) + " --> Exited GET ACTIVE PROJECT mode\n")
+        logfile.write(str(now) + " <-- Exited GET ACTIVE PROJECT mode\n")
         logfile.close()
     main_menu()
 
@@ -145,7 +145,7 @@ def set_byoid():
     input('\nOperation executed. Press enter to get back to main menu: ')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
-        logfile.write(str(now) + " --> Exited SET BYOID PROJECT mode\n")
+        logfile.write(str(now) + " <-- Exited SET BYOID PROJECT mode\n")
         logfile.close()
     main_menu()
 
@@ -165,7 +165,7 @@ def set_project():
     input('\nOperation executed. Press enter to get back to main menu: ')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
-        logfile.write(str(now) + " --> Exited LIST ALL PROJECTS mode\n")
+        logfile.write(str(now) + " <-- Exited LIST ALL PROJECTS mode\n")
         logfile.close()
     main_menu()
 
@@ -184,7 +184,7 @@ def get_all_projects():
     input('\nOperation executed. Press enter to get back to main menu: ')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
-        logfile.write(str(now) + " --> Exited LIST ALL PROJECTS mode\n")
+        logfile.write(str(now) + " <-- Exited LIST ALL PROJECTS mode\n")
         logfile.close()
     main_menu()
 
@@ -203,7 +203,7 @@ def get_all_organizations():
     input('\nOperation executed. Press enter to get back to main menu: ')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
-        logfile.write(str(now) + " --> Exited LIST ALL ORGANIZATIONS mode\n")
+        logfile.write(str(now) + " <-- Exited LIST ALL ORGANIZATIONS mode\n")
         logfile.close()
     main_menu()
 
@@ -219,7 +219,7 @@ def alpha_interactive_cli():
     input('\nPress enter to get back to the main menu: ')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
-        logfile.write(str(now) + " --> Exited ALPHA INTERACTIVE menu\n")
+        logfile.write(str(now) + " <-- Exited ALPHA INTERACTIVE menu\n")
         logfile.close()
     main_menu()
 
@@ -319,7 +319,7 @@ def login_account():
             input('\nYou decided to go back to the main menu. Press enter to get back there: ')
             now = datetime.now()
             with open(gcp_system_log_file, 'a') as logfile:
-                logfile.write(str(now) + " --> Exited LOGIN menu\n")
+                logfile.write(str(now) + " <-- Exited LOGIN menu\n")
                 logfile.close()
             main_menu()
         else:
@@ -327,6 +327,65 @@ def login_account():
     account_types()
 
 def compute_engine_module():
+
+    def compute_regions_show():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE REGION SHOW mode\n")
+            logfile.close()
+        print("\nCompute show region mode accessed.\n")
+        print('Showing current region...  \n')
+        os.system('gcloud config list compute/region')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " - Executed command: gcloud config list compute/region\n")
+            logfile.close()
+        input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE REGION SHOW mode\n")
+            logfile.close()
+        compute_engine_module()
+
+    def compute_regions_set():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE REGION SET mode\n")
+            logfile.close()
+        print('\nRegion set mode accesed.\n')
+        region_set = input('Provide the name of the region to set/change: ')
+        os.system('gcloud compute set compute/region ' + region_set)
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(
+                str(now) + " - Executed command: gcloud compute set compute/region " + region_set + "\n")
+            logfile.close()
+        input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE REGION SET mode\n")
+            logfile.close()
+        compute_engine_module()
+
+    def compute_regions_list():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE REGIONS LIST mode\n")
+            logfile.close()
+        print("\nCompute list regions mode accessed.\n")
+        print('Listing compute regions...  \n')
+        os.system('gcloud compute regions list')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " - Executed command: gcloud compute zones list\n")
+            logfile.close()
+        input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE REGIONS LIST mode\n")
+            logfile.close()
+        compute_engine_module()
+
     def compute_zones():
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
@@ -520,7 +579,7 @@ def compute_engine_module():
         os.system('gcloud compute instances delete '+vm_instance_name+delete_quiet)
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
-            logfile.write(str(now) + " - Executed command: gcloud compute instances delete " + vm_instance_name + default_zone + "\n")
+            logfile.write(str(now) + " - Executed command: gcloud compute instances delete " + vm_instance_name + delete_quiet + "\n")
             logfile.close()
         input('\nPress enter to get back to the compute engine menu: ')
         now = datetime.now()
@@ -769,20 +828,23 @@ def compute_engine_module():
     print("*******************************************")
     print('          COMPUTE ENGINE MODULE           \n')
     print('1 - List zones')
-    print('2 - Describe specific zone')
-    print('3 - List running vms - os-instances')
-    print('4 - Describe a vm instance - os-instance')
-    print('5 - Find vm by name')
-    print('6 - Find vm by image name')
-    print('7 - List images')
-    print('8 - SSH into vm only with vm name - simple mode')
-    print('9 - Create default VM instance/s - To create more than one separate strings by space')
-    print('10 - Delete vm instance/s - To delete more than one separate strings by space' )
-    print('11 - Create an instance template')
-    print('12 - Delete an instance template')
-    print('13 - Find an instance template')
-    print('14 - List instance templates')
-    print('15 - Describe an instance template')
+    print('2 - List regions')
+    print('3 - Show set region')
+    print('4 - Change/set region')
+    print('5 - Describe specific zone')
+    print('6 - List running vms - os-instances')
+    print('7 - Describe a vm instance - os-instance')
+    print('8 - Find vm by name')
+    print('9 - Find vm by image name')
+    print('10 - List images')
+    print('11 - SSH into vm only with vm name - simple mode')
+    print('12 - Create default VM instance/s - To create more than one separate strings by space')
+    print('13 - Delete vm instance/s - To delete more than one separate strings by space' )
+    print('14 - Create an instance template')
+    print('15 - Delete an instance template')
+    print('16 - Find an instance template')
+    print('17 - List instance templates')
+    print('18 - Describe an instance template')
     print('a - > Advanced mode - requires more advanced knowledge')
     print('b - < Back to main menu')
     print('\n')
@@ -790,32 +852,38 @@ def compute_engine_module():
     if compute_selection == '1':
         compute_zones()
     if compute_selection == '2':
-        compute_zone_describe()
+        compute_regions_list()
     if compute_selection == '3':
-        compute_list_running_os_instances()
-    if compute_selection == '4':
-        compute_describe_runnning_os_instances()
-    if compute_selection ==  '5':
-        compute_zone_filter()
+        compute_regions_show()
+    if compute_selection == "4":
+        compute_regions_set()
+    if compute_selection == '5':
+        compute_zone_describe()
     if compute_selection == '6':
-        compute_vm_name()
+        compute_list_running_os_instances()
     if compute_selection == '7':
-        compute_list_images()
-    if compute_selection == '8':
-        compute_ssh_vm_simple()
+        compute_describe_runnning_os_instances()
+    if compute_selection ==  '8':
+        compute_zone_filter()
     if compute_selection == '9':
-        compute_create_vm_instance()
+        compute_vm_name()
     if compute_selection == '10':
-        compute_delete_vm_instance()
+        compute_list_images()
     if compute_selection == '11':
-        compute_create_instance_template()
+        compute_ssh_vm_simple()
     if compute_selection == '12':
-        compute_delete_instance_template()
+        compute_create_vm_instance()
     if compute_selection == '13':
-        compute_find_instance_template()
+        compute_delete_vm_instance()
     if compute_selection == '14':
-        compute_list_instance_template()
+        compute_create_instance_template()
     if compute_selection == '15':
+        compute_delete_instance_template()
+    if compute_selection == '16':
+        compute_find_instance_template()
+    if compute_selection == '17':
+        compute_list_instance_template()
+    if compute_selection == '18':
         compute_describe_instance_template()
     if compute_selection == 'a':
         compute_advanced_module()
@@ -835,7 +903,7 @@ def update_gcloud():
     input('\nPress enter to get back to the main menu: ')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
-        logfile.write(str(now) + " --> Exited UPDATE GCLOUD menu\n")
+        logfile.write(str(now) + " <-- Exited UPDATE GCLOUD menu\n")
         logfile.close()
     main_menu()
 
@@ -844,7 +912,7 @@ def system_logs_events():
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now)+" --> Accessed SYSTEM LOG FILE menu\n")
         logfile.close()
-    gcp_logs_file='gcp_system_log.log'
+    gcp_logs_file='gcp_system_log.log'  # System event log file var
     print('Mode S accesed. System and events loger\n')
     print('************************************************\n')
     print('           GCP CLI EVENT LOGGING MODE           \n')
