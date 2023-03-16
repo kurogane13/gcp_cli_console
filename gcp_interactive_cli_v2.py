@@ -231,15 +231,93 @@ def login_account():
     print('Mode L accessed.\n')
     print('\nAccount login/switch mode.\n')
     def account_types():
+        def interactive_sign_in():
+            # Interactive gcloud login
+            global LOGIN_CONFIG_FILE
+            WORKFORCE_POOL_ID = input("\nPlease type the name of the workforce pool and provider ID: ")
+            LOGIN_CONFIG_FILE = input('\nProvide a name for the login configuration file (example: login.json): ')
+            global_var = 'gcloud iam workforce-pools create-login-config ' + WORKFORCE_POOL_ID + ' --output-file=' + LOGIN_CONFIG_FILE + ' --activate'
+            print('\nCreating sign in config file...\n')
+            os.system(global_var)
+            print('\nReading created file ' + LOGIN_CONFIG_FILE + ' metadata: \n')
+            with open(LOGIN_CONFIG_FILE, 'r') as filedata:  # Opening the given file in read-only mode
+                for line in filedata:
+                    print(line)
+            filedata.close()
+            input('\nPress enter to proceed to the main menu: ')
+            account_types()
+
+        def proceed_to_login():
+            EXISTING_LOGIN_CONFIG_FILE = input('\nProvide an existing valid name to log in to you provider and press enter: ')
+            pwd_path = os.getcwd()
+            gcloud_auth_login_var = 'gcloud auth login --login-config='
+            if EXISTING_LOGIN_CONFIG_FILE == "":
+                input('\nNothing was typed. Press enter to retry...')
+                proceed_to_login()
+            if os.path.isfile(EXISTING_LOGIN_CONFIG_FILE):
+                print("\nFile " + EXISTING_LOGIN_CONFIG_FILE + " was found...")
+                os.system('\n' + gcloud_auth_login_var + EXISTING_LOGIN_CONFIG_FILE)
+                print("\nShowing active account: ")
+                os.system('\ngcloud config list account --format "value(core.account)"')
+                input('\nPress enter to proceed to the main menu: ')
+                account_types()
+            else:
+                print("\nFile " + EXISTING_LOGIN_CONFIG_FILE + " not found")
+                print('\nUnable to login. Retry again generating a new one.')
+                input('\nPress enter to proceed to the main menu: ')
+                account_types()
+
+        def set_property():
+            property_file=input("Provide valid .json file to set the property to login: ")
+            if os.path.isfile(property_file):
+                print("\nFile " + property_file + " was found...")
+                set_prop_var = 'gcloud config set auth/login_config_file ' + property_file
+                print('\nSetting property based on ' + property_file + ' ...')
+                os.system(set_prop_var)
+                input('\nPress enter to proceed to the main menu: ')
+                account_types()
+
+            else:
+                print("\nFile " + property_file + " not found")
+                print('\nUnable to login. Retry again generating a new one.')
+                input('\nPress enter to proceed to the main menu: ')
+                account_types()
+
+        def unset_property():
+            unset_prop_var = 'gcloud config unset auth/login_config_file '
+            print('\nUnsetting property...')
+            os.system(unset_prop_var)
+            input('\nPress enter to proceed to the main menu: ')
+            account_types()
+
+        def gcloud_auth():
+            input('\nPress enter to run gcloud auth login: ')
+            gcloud_auth = '\ngcloud auth login'
+            os.system(gcloud_auth)
+            input('\nPress enter to proceed to the main menu: ')
+            account_types()
+
         print('\n- a - Show active logged in account')
+        print('- i - Initiate gcloud - gcloud init')
+        print('- c - Run gcloud auth login')
+        print('- f - Generate config file based on workforce pool provider')
         print('- g - To login with a corporate GOOGLE account')
-        print('- t - To login to OKTA THIRD PARTY account - byoid-ui-testing-project')
-        print('- k - Set new token key for your OKTA THIRD PARTY account - byoid-ui-testing-project')
-        print('- p - Log in directly to your third party account  - Must provide a valid ,json token key file name')
-        print('- c - Set new token and log in to a provider/project')
+        print('- l - Log in to your provider, by providing an existing valid .json config file')
         print('- s - Set active account')
+        print('- p - To set the property to use the config file')
+        print('- u - To unset the property')
         print('- b - < Back to main menu')
         selection=input('\nType an option from the menu and press enter: ')
+        if selection == "i":
+            input('\nPress enter to init gcloud now: ')
+            gcloud_init = '\ngcloud init'
+            os.system(gcloud_init)
+            input('\nPress enter to proceed to the main menu: ')
+            account_types()
+        if selection  == "f":
+            interactive_sign_in()
+        if selection == "c":
+            gcloud_auth()
         if selection  == 'a':
             input('\nPress enter to view the current active account: ')
             print('\nThe current logged in set account is: \n')
@@ -251,70 +329,17 @@ def login_account():
             os.system('gcloud auth login ' + account)
             input('\nPress enter to get back to the main menu: ')
             account_types()
-        if selection ==  't':
-            os.system('\ngcloud auth login --cred-file=config.json')
-            print("\nShowing active account: ")
-            os.system('gcloud config list account --format "value(core.account)"')
-            input('\nPress enter to get back to the main menu: ')
-            account_types()
-        if selection == 'k':
-            source_file=input('\nProvide a file name to save the token: ')
-            paste_key=input('\nNow paste the key to write to the file: '+source_file+': ')
-            global_var='gcloud iam workforce-pools create-cred-config locations/global/workforcePools/byoid-ui-test-pool/providers/okta-provider --subject-token-type=urn:ietf:params:oauth:token-type:id_token --credential-source-file='+source_file+" "+'--workforce-pool-user-project=byoid-ui-testing-project --output-file=config.json'
-            try:
-                with open(source_file, 'w') as file:
-                    file.write(paste_key)
-                    file.close()
-                os.system(global_var)
-                os.system('\ngcloud auth login --cred-file=config.json')
-                print("\nShowing active account: ")
-                os.system('gcloud config list account --format "value(core.account)"')
-                input('\nPress enter to get back to the main menu: ')
-                account_types()
-            except:
-                print('\nUnable to parse the provided data.  Please check that all the fields, and metadata was parsed correctly and retry.')
-                account_types()
-        if selection == 'c':
-            print('\nLog in to specific provider project mode accessed: ')
-            print('\nFor this mode you will need to provide the specific data:')
-            print('\n - Workforce pool name')
-            print(' - Workforce pool user project')
-            print(' - Third party provider name')
-            print(' - A file name (to save the token key)')
-            print(' - Token key in string format')
-            data=input('\nOnce you have gathered all the data, press enter to begin: ')
-            workforce_pool_name=input('\nType the workforce pool name: ')
-            workforce_user_project=input('\nType the workforce user project name: ')
-            third_party_provider_name=input('\nType the  third party provider name: ')
-            token_filename=input('\nProvide a token file name to save the key - NOTE: Do not type an extension: ')
-            token_key=input('\nCopy and paste the token key in string format: ')
-            input('\nOnce ready press enter to process the gathered data, and attempt to set the project: ')
-            try:
-                with open(token_filename, 'w') as file:
-                    file.write(token_key)
-                    file.close()
-                global_var='gcloud iam workforce-pools create-cred-config locations/global/workforcePools/'+workforce_pool_name+'/providers/'+third_party_provider_name+' --subject-token-type=urn:ietf:params:oauth:token-type:id_token --credential-source-file='+token_filename+" "+'--workforce-pool-user-project='+workforce_user_project+' --output-file='+third_party_provider_name+'_config.json'
-                os.system(global_var)
-                os.system('\ngcloud auth login --cred-file='+third_party_provider_name+'_config.json')
-                print("\nShowing active account: ")
-                os.system('gcloud config list account --format "value(core.account)"')
-                input('\nPress enter to get back to the main menu: ')
-                account_types()
-            except:
-                print('\nUnable to parse the provided data. Please check that all the fields, and metadata was parsed correctly and retry.')
-                account_types()
         if selection == 's':
             set_active_account=input("Provide the name of the account you want to set: ")
             os.system('gcloud config set account '+set_active_account)
             input('\nPress enter to get back to the main menu: ')
             account_types()
-        if selection ==  'p':
-            key_file_name=input('\nPlease provide a valid .json key file name to attempt to login to your account project: ')
-            os.system('\ngcloud auth login --cred-file='+key_file_name)
-            print("\nShowing active account: ")
-            os.system('gcloud config list account --format "value(core.account)"')
-            input('\nPress enter to get back to the main menu: ')
-            account_types()
+        if selection ==  'l':
+            proceed_to_login()
+        if selection == 'p':
+            set_property()
+        if selection == 'u':
+            unset_property()
         if selection == 'b':
             input('\nYou decided to go back to the main menu. Press enter to get back there: ')
             now = datetime.now()
