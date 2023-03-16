@@ -7,6 +7,10 @@ from datetime import datetime
 
 gcp_system_log_file='gcp_system_log.log'  # System event log file var
 
+def timestamp():
+    now=datetime.now()
+    print("\nTest case termination timestamp: "+str(now))
+
 def return_to_main_menu():
     gcp_system_log_file = 'gcp_system_log.log'
     now = datetime.now()
@@ -109,15 +113,16 @@ def free_command_input():
             logfile.close()
         print('\nRun test case/s menu Accessed\n')
         test_case_run=input("Provide a valid test case name, and press enter to run it: ")
-        try:
-            print("\nAttempting to run test case "+test_case_run+'...\n')
+        print("\nAttempting to run test case "+test_case_run+'...\n')
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        if test_case_run in os.listdir(path=dir_path+"/"+gcp_scripts_dir):
             runpy.run_path(path_name=gcp_scripts_dir+"/"+test_case_run) #run module without importing
             now = datetime.now()
             with open(gcp_system_log_file, 'a') as logfile:
                 logfile.write(str(now) + " - Executed test case script: "+gcp_scripts_dir+"/"+test_case_run+"\n")
                 logfile.close()
             timestamp()
-        except:
+        else:
             print("The provided file name was invalid or not found. Please retry.")
             with open(gcp_system_log_file, 'a') as logfile:
                 logfile.write(str(now) + " - ERROR: Unable to run test case script: "+gcp_scripts_dir+"/"+test_case_run+". Check for errors in the cli script if  found in path.\n")
