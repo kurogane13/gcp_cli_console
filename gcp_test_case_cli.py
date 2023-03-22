@@ -8,11 +8,11 @@ from datetime import datetime
 gcp_scripts_dir='gcp_automation_test_scripts'
 
 def return_to_main_menu():
-    from gcp_interactive_cli_v2 import main_menu
+    from gcp_python_interactive_cli_v2 import main_menu
     main_menu()
 
 def return_to_compute_menu():
-    from gcp_interactive_cli_v2 import compute_engine_module
+    from gcp_python_interactive_cli_v2 import compute_engine_module
     compute_engine_module()
 
 def select_menu():

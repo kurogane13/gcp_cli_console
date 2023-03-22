@@ -17,7 +17,7 @@ def return_to_main_menu():
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " <-- Exited FREE COMMAND LINE MAIN menu\n")
         logfile.close()
-    from gcp_interactive_cli_v2 import main_menu
+    from gcp_python_interactive_cli_v2 import main_menu
     main_menu()
 
 def return_to_compute_menu():
@@ -26,7 +26,7 @@ def return_to_compute_menu():
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " <-- Exited FREE COMMAND LINE MAIN menu\n")
         logfile.close()
-    from gcp_interactive_cli_v2 import compute_engine_module
+    from gcp_python_interactive_cli_v2 import compute_engine_module
     compute_engine_module()
 
 def free_command_input():
