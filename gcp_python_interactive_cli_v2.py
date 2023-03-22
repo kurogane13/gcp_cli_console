@@ -21,7 +21,7 @@ def check_billing_project():
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " --> Accessed DESCRIBE PROJECT BILLING DATA mode\n")
         logfile.close()
-    print('- Mode 2 accessed.\n')
+    print('- Mode 1 accessed.\n')
     project_name=input('Provide a valid project name and press enter: ')
     print("\nRetrieving billing data for project name: "+project_name+'\n')
     os.system('gcloud beta billing projects describe '+project_name)
@@ -40,7 +40,7 @@ def describe_specific_project():
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " --> Accessed DESCRIBE PROJECT mode\n")
         logfile.close()
-    print('- Mode 4 Accessed\n')
+    print('- Mode 2 Accessed\n')
     project_to_describe=input('Type a project name to describe it: ')
     os.system('gcloud projects describe '+project_to_describe)
     now = datetime.now()
@@ -59,7 +59,7 @@ def get_cconfigurations_list():
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " --> Accessed GET CONFIGURATION LIST mode\n")
         logfile.close()
-    print('- Mode 5 Accessed\n')
+    print('- Mode 3 Accessed\n')
     print('Getting configuration list...\n')
     os.system('gcloud config configurations list')
     now = datetime.now()
@@ -78,7 +78,7 @@ def get_active_project():
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " --> Accessed GET ACTIVE PROJECT mode\n")
         logfile.close()
-    print('- Mode 6 accessed.\n')
+    print('- Mode 4 accessed.\n')
     print('Active project is: \n')
     os.system('gcloud config get-value project')
     now = datetime.now()
@@ -93,7 +93,7 @@ def get_active_project():
     main_menu()
 
 def set_project():
-    print('- Mode 8 accessed.\n')
+    print('- Mode 5 accessed.\n')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " --> Accessed LIST ALL PROJECTS mode\n")
@@ -113,7 +113,7 @@ def set_project():
     main_menu()
 
 def get_all_projects():
-    print('- Mode 9 accessed.\n')
+    print('- Mode 6 accessed.\n')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " --> Accessed LIST ALL PROJECTS mode\n")
@@ -136,7 +136,7 @@ def get_all_organizations():
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " --> Accessed LIST ALL ORGANIZATIONS mode\n")
         logfile.close()
-    print('- Mode 10 accessed.\n')
+    print('- Mode 7 accessed.\n')
     print('Listing all organizations....\n')
     os.system('gcloud organizations list')
     now = datetime.now()
