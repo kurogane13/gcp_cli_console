@@ -654,6 +654,139 @@ def compute_engine_module():
             logfile.write(str(now) + " <-- Exited COMPUTE DESCRIBE INSTANCE TEMPLATE mode\n")
             logfile.close()
         compute_engine_module()
+
+    def compute_operations_list_describe():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed COMPUTE OPERATIONS main mode\n")
+            logfile.close()
+        def compute_operations_list_json():
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Accessed COMPUTE OPERATIONS JSON format list mode\n")
+                logfile.close()
+            list_operation_name = input('\nProvide the name of the user, to list all of the executed operations in compute: ')
+            quotes='"'
+            os.system('gcloud compute operations list --filter="user='+list_operation_name+quotes+' --format=json')
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + ' - Executed command: gcloud compute operations list --filter='+"user="+list_operation_name+quotes+' --format=json'+"\n")
+                logfile.close()
+            script_timestamp = datetime.now()
+            format_script_timestamp = str(script_timestamp).replace(" ", "_")
+            query_api_log=format_script_timestamp+"_"+"list_json_"+list_operation_name+".log"
+            with open(query_api_log, 'a') as logfile:
+                try:
+                    logfile.write(os.system('gcloud compute operations list --filter="user=' + list_operation_name + quotes + ' --format=json | tee -a '+query_api_log))
+                    logfile.close()
+                    print("\nGenerated log file: "+query_api_log+" which you can view and query from the compute operations menu")
+                    input('\nPress enter to get back to the compute operations menu: ')
+                    now = datetime.now()
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + " + Generated log file: "+query_api_log+"\n")
+                        logfile.close()
+                    now = datetime.now()
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS JSON format list mode\n")
+                        logfile.close()
+                    compute_operations_list_describe()
+                except:
+                    print("\nGenerated log file: " + query_api_log + " which you can view and query from the compute operations menu")
+                    input('\nPress enter to get back to the compute operations menu: ')
+                    now = datetime.now()
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + " + Generated log file: "+query_api_log+"\n")
+                        logfile.close()
+                    now = datetime.now()
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS JSON format list mode\n")
+                        logfile.close()
+                    compute_operations_list_describe()
+
+        def compute_operations_list_text():
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Accessed COMPUTE OPERATIONS TEXT format list mode\n")
+                logfile.close()
+            list_operation_name = input('\nProvide the name of the user, to list all of the executed operations in compute: ')
+            quotes='"'
+            os.system('gcloud compute operations list --filter="user='+list_operation_name+quotes)
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + ' - Executed command: gcloud compute operations list --filter='+"user="+list_operation_name+quotes+"\n")
+                logfile.close()
+            script_timestamp = datetime.now()
+            format_script_timestamp = str(script_timestamp).replace(" ", "_")
+            query_api_log = format_script_timestamp + "_" + "list_text_" + list_operation_name + ".log"
+            with open(query_api_log, 'a') as logfile:
+                try:
+                    logfile.write(os.system('gcloud compute operations list --filter="user=' + list_operation_name + quotes + ' | tee -a ' + query_api_log))
+                    logfile.close()
+                    print("\nGenerated log file: " + query_api_log + " which you can view and query from the compute operations menu")
+                    input('\nPress enter to get back to the compute operations menu: ')
+                    now = datetime.now()
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + " + Generated log file: " + query_api_log + "\n")
+                        logfile.close()
+                    now = datetime.now()
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS TEXT format list mode\n")
+                        logfile.close()
+                    compute_operations_list_describe()
+                except:
+                    print("\nGenerated log file: " + query_api_log + " which you can view and query from the compute operations menu")
+                    input('\nPress enter to get back to the compute operations menu: ')
+                    now = datetime.now()
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + " + Generated log file: " + query_api_log + "\n")
+                        logfile.close()
+                    now = datetime.now()
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS TEXT format list mode\n")
+                        logfile.close()
+                    compute_operations_list_describe()
+
+        def compute_operations_describe():
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Accessed COMPUTE OPERATIONS describe mode\n")
+                logfile.close()
+            describe_operation_name = input('\nProvide the name of the operation to describe: ')
+            quotes = '"'
+            os.system('gcloud compute operations describe '+describe_operation_name)
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + ' - Executed command: gcloud compute operations describe '+describe_operation_name+"\n")
+                logfile.close()
+            input('\nPress enter to get back to the compute operations menu: ')
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS describe mode\n")
+                logfile.close()
+            compute_operations_list_describe()
+
+        print('\nCompute operations mode accessed.\n')
+        print('************************************************')
+        print('       COMPUTE OPERATIONS MAIN MENU            \n')
+        print('- 1 - JSON format - List compute operations - filter by username')
+        print('- 2 - TEXT format - List compute operations - filter by username')
+        print('- 3 - Describe a specific compute operation')
+        print('- c <-- Back to compute engine main menu')
+        print('- b <-- Back to main menu')
+        selection=input('\nType an option from the menu and press enter: ')
+        if selection=='1':
+            compute_operations_list_json()
+        if selection=='2':
+            compute_operations_list_text()
+        if selection=='3':
+            compute_operations_describe()
+        if selection=='c':
+            compute_engine_module()
+        if selection=='b':
+            main_menu()
+        else:
+            compute_operations_list_describe()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited COMPUTE OPERATIONS main mode\n")
+            logfile.close()
+
     def compute_advanced_module():
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
@@ -813,6 +946,7 @@ def compute_engine_module():
     print('16 - Find an instance template')
     print('17 - List instance templates')
     print('18 - Describe an instance template')
+    print('o - Operations menu - Lists and describes operations executed by users')
     print('a - > Advanced mode - requires more advanced knowledge')
     print('b - < Back to main menu')
     print('\n')
@@ -853,6 +987,8 @@ def compute_engine_module():
         compute_list_instance_template()
     if compute_selection == '18':
         compute_describe_instance_template()
+    if compute_selection == 'o':
+        compute_operations_list_describe()
     if compute_selection == 'a':
         compute_advanced_module()
     if compute_selection == 'b':
