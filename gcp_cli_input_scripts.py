@@ -119,7 +119,7 @@ def free_command_input():
             runpy.run_path(path_name=gcp_scripts_dir+"/"+test_case_run) #run module without importing
             now = datetime.now()
             with open(gcp_system_log_file, 'a') as logfile:
-                logfile.write(str(now) + " - Executed test case script: "+gcp_scripts_dir+"/"+test_case_run+"\n")
+                logfile.write(str(now) + " ! Executed test case script: "+gcp_scripts_dir+"/"+test_case_run+"\n")
                 logfile.close()
             timestamp()
         else:
