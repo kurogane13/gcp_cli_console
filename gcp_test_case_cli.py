@@ -913,7 +913,7 @@ def test_case_module():
         test_case_file_name=new_test_case_input+test_case_string_var+id+random_id
         print('\nThe test case will be saved in a python file format with the following name: '+test_case_file_name+'.py')
         with open (gcp_scripts_dir+"/"+test_case_file_name+pyext, 'w') as file:
-            file.write(import_os_module+new_line+import_sys_module+new_line+new_line)
+            file.write(import_os_module+new_line+import_sys_module)
             file.close()
         print('\nTest case '+test_case_file_name+pyext+' was created and is empty.\n')
         now = datetime.now()
@@ -1040,6 +1040,32 @@ def test_case_module():
         except:
             invalid_file_provided()
 
+    def read_code_from_script():
+        try:
+            gcp_system_log_file = 'gcp_system_log.log'
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Accessed Read script code mode\n")
+                logfile.close()
+            file_to_read=input('\nProvide file name to read: ')
+            print("\nViewing all code in file: "+file_to_read+'\n')
+            with open(gcp_scripts_dir+"/"+file_to_read, 'r') as filedata:     # Opening the given file in read-only mode
+               for line in filedata:
+                    print(line)
+            filedata.close()
+            input("\nPress enter to get back to the menu: ")
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " - Read test case code in path: "+gcp_scripts_dir+"\n")
+                logfile.close()
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " <-- Exited Read script code mode\n")
+                logfile.close()
+            test_case_module()
+        except:
+            invalid_file_provided()
+
     def delete_cases():
         gcp_system_log_file = 'gcp_system_log.log'
         now = datetime.now()
@@ -1125,6 +1151,7 @@ def test_case_module():
     print('4 - Delete all test case files')
     print('5 - View saved test cases')
     print('6 - Read test case steps from file')
+    print('7 - Read code in a test case. Shows all file content')
     print('c <- Compute engine module')
     print('b <- Back to Main menu')
     test_case_menu_selection=input('\nSelect an option from the menu and press enter: ')
@@ -1140,6 +1167,8 @@ def test_case_module():
         view_test_cases()
     if test_case_menu_selection == "6":
         reading_steps_from_file()
+    if test_case_menu_selection == "7":
+        read_code_from_script()
     if test_case_menu_selection == 'c':
         return_to_compute_menu()
     if test_case_menu_selection == 'b':

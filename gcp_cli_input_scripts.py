@@ -70,7 +70,7 @@ def free_command_input():
         command_string = "Attempting to run gcloud command instance..."
         print('\nThe test case will be saved in a python file format with the following name: ' + free_test_case_file_name + '.py')
         with open(gcp_scripts_dir+"/"+free_test_case_file_name+pyext, 'w') as file:
-            file.write(import_os_module+new_line+import_sys_module+new_line+new_line)
+            file.write(import_os_module+new_line+import_sys_module)
             file.close()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(str(now) + " + Created test case "+free_test_case_file_name)
@@ -80,8 +80,8 @@ def free_command_input():
         def add_more_commands():
             provide_command = input('\nPlease provide the desired gcloud command you wish to add to the script test case, and press enter: ')
             with open(gcp_scripts_dir+"/"+free_test_case_file_name+pyext, 'a') as file:
-                file.write(new_line+print_string+left_bracket+quote+command_string+quote+right_bracket+new_line)
-                file.write(new_line+os_system+left_bracket+quote+provide_command+quote+right_bracket+new_line)
+                file.write(new_line+print_string+left_bracket+quote+command_string+quote+right_bracket)
+                file.write(new_line+os_system+left_bracket+quote+provide_command+quote+right_bracket)
                 file.close()
                 print('\nAdded command: '+'"'+provide_command+'"'+' to script : '+free_test_case_file_name+pyext)
                 gcp_system_log_file = 'gcp_system_log.log'
@@ -202,6 +202,41 @@ def free_command_input():
             input('\nMake sure the file name is correct, and is in the path and retry. Press enter to return back to the menu: ')
             free_command_input()
 
+    def read_script_code():
+        try:
+            gcp_system_log_file = 'gcp_system_log.log'
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Accessed Read script code mode\n")
+                logfile.close()
+            file_to_read=input('\nProvide file name to read: ')
+            if file_to_read == "":
+                print('\nYou tiped nothing. Type a valid script name to read code from.')
+                read_script_code()
+            print("\nViewing all code in file: "+file_to_read+'\n')
+            with open(gcp_scripts_dir+"/"+file_to_read, 'r') as filedata:     # Opening the given file in read-only mode
+               for line in filedata:
+                    print(line)
+            filedata.close()
+            input("\nPress enter to get back to the menu: ")
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " - Read test case code in path: "+gcp_scripts_dir+"\n")
+                logfile.close()
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " <-- Exited Read script code mode\n")
+                logfile.close()
+            free_command_input()
+        except:
+            print(str(now) + " ! ERROR: "+file_to_read+" was not found or was moved from path"+gcp_system_log_file+". Unable to read.\n")
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " ! ERROR: "+file_to_read+" was not found or was moved from path"+gcp_system_log_file+". Unable to read.\n")
+                logfile.close()
+            input('\nPress enter to get back to the menu: ')
+            free_command_input()
+
     def delete_cases():
         gcp_system_log_file = 'gcp_system_log.log'
         with open(gcp_system_log_file, 'a') as logfile:
@@ -265,6 +300,7 @@ def free_command_input():
     print('4 - Delete all test case files')
     print('5 - View saved test cases')
     print('6 - Read test case commands from file')
+    print('7 - View all code in file. Shows entire file content')
     print('c <- Compute engine module')
     print('b <- Back to Main menu')
     free_command_menu_selection=input('\nSelect an option from the menu and press enter: ')
@@ -280,6 +316,8 @@ def free_command_input():
         view_test_cases()
     if free_command_menu_selection == '6':
         reading_steps_from_file()
+    if free_command_menu_selection == '7':
+        read_script_code()
     if free_command_menu_selection == 'c':
         return_to_compute_menu()
     if free_command_menu_selection == 'b':
