@@ -218,7 +218,7 @@ def free_command_input():
                 os.remove(gcp_scripts_dir+"/"+case)
                 print('\nRemoved file: '+delete_test_cases)
                 with open(gcp_system_log_file, 'a') as logfile:
-                    logfile.write(str(now) + " - DELETED test case script: "+gcp_scripts_dir+"/"+case)
+                    logfile.write(str(now) + " - DELETED test case script: "+gcp_scripts_dir+"/"+case+"\n")
                     logfile.close()
         input('\nPress enter to get back to the main menu: ')
         with open(gcp_system_log_file, 'a') as logfile:
