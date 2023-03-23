@@ -1091,6 +1091,13 @@ def test_case_module():
                     with open(gcp_system_log_file, 'a') as logfile:
                         logfile.write(str(now) + " - Deleted script file: "+case+" from path: "+gcp_scripts_dir+"\n")
                         logfile.close()
+                else:
+                    print('\n!ERROR: Unable to delete' + case+". Not found in path: "+gcp_scripts_dir)
+                    now = datetime.now()
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + "!ERROR: Unable to delete"+case+". Not found in path: "+gcp_scripts_dir+"\n")
+                        logfile.close()
+
             enter=input('\nPress enter to get back to the main menu: ')
             test_case_module()
         if delete_all == 'n':
