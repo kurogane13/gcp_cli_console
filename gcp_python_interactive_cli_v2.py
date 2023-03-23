@@ -843,7 +843,7 @@ def compute_engine_module():
                         if compute_log_regexp in line:
                             print(line)
                     with open(gcp_system_log_file, 'a') as logfile:
-                        logfile.write(str(now) + ' - Searched for regexp: '+compute_log_regexp+" in logfile: "+provide_log+"\n")
+                        logfile.write(str(now) + ' ? Searched for regexp: '+"'"+compute_log_regexp+"'"+" in logfile: "+provide_log+"\n")
                         logfile.close()
                     print('\nTo find another regular expresion in log file: '+provide_log+' press enter.')
                     find_again=input('\nTo get back to main menu type "b": ')
@@ -1191,6 +1191,10 @@ def update_gcloud():
     input('\nPress enter to get back to the main menu: ')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " - Executed command: gcloud components update\n")
+        logfile.close()
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " <-- Exited UPDATE GCLOUD menu\n")
         logfile.close()
     main_menu()
@@ -1230,6 +1234,9 @@ def system_logs_events():
             logfile.close()
         regexp=input("\nPlease type the regular expresion you want to find in the log file: ")
         print("\nShowing regexp: '"+regexp+"', in logfile file: "+'\n')
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now)+" ? - Searched for regexp: "+"'"+regexp+"'"+" in system logfile"+"\n")
+            logfile.close()
         with open(gcp_logs_file, 'r') as filedata:     # Opening the given file in read-only mode
            for line in filedata:
                 if regexp in line:
