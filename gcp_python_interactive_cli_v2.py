@@ -656,6 +656,8 @@ def compute_engine_module():
         compute_engine_module()
 
     def compute_operations_list_describe():
+        operations_dir="compute_operations_logs"
+        os.system('mkdir -p '+operations_dir)
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(str(now) + " --> Accessed COMPUTE OPERATIONS main mode\n")
@@ -674,15 +676,16 @@ def compute_engine_module():
             script_timestamp = datetime.now()
             format_script_timestamp = str(script_timestamp).replace(" ", "_")
             query_api_log=format_script_timestamp+"_"+"list_json_"+list_operation_name+".log"
-            with open(query_api_log, 'a') as logfile:
+            operations_dir="compute_operations_logs"
+            with open(operations_dir+"/"+query_api_log, 'a') as logfile:
                 try:
-                    logfile.write(os.system('gcloud compute operations list --filter="user=' + list_operation_name + quotes + ' --format=json | tee -a '+query_api_log))
+                    logfile.write(os.system('gcloud compute operations list --filter="user=' + list_operation_name + quotes + ' --format=json | tee -a '+operations_dir+"/"+query_api_log))
                     logfile.close()
-                    print("\nGenerated log file: "+query_api_log+" which you can view and query from the compute operations menu")
+                    print("\nGenerated log file: "+operations_dir+"/"+query_api_log+" which you can view and query from the compute operations menu")
                     input('\nPress enter to get back to the compute operations menu: ')
                     now = datetime.now()
                     with open(gcp_system_log_file, 'a') as logfile:
-                        logfile.write(str(now) + " + Generated log file: "+query_api_log+"\n")
+                        logfile.write(str(now) + " + Generated log file: "+operations_dir+"/"+query_api_log+"\n")
                         logfile.close()
                     now = datetime.now()
                     with open(gcp_system_log_file, 'a') as logfile:
@@ -690,11 +693,11 @@ def compute_engine_module():
                         logfile.close()
                     compute_operations_list_describe()
                 except:
-                    print("\nGenerated log file: " + query_api_log + " which you can view and query from the compute operations menu")
+                    print("\nGenerated log file: " + operations_dir+"/"+query_api_log + " which you can view and query from the compute operations menu")
                     input('\nPress enter to get back to the compute operations menu: ')
                     now = datetime.now()
                     with open(gcp_system_log_file, 'a') as logfile:
-                        logfile.write(str(now) + " + Generated log file: "+query_api_log+"\n")
+                        logfile.write(str(now) + " + Generated log file: "+operations_dir+"/"+query_api_log+"\n")
                         logfile.close()
                     now = datetime.now()
                     with open(gcp_system_log_file, 'a') as logfile:
@@ -716,15 +719,16 @@ def compute_engine_module():
             script_timestamp = datetime.now()
             format_script_timestamp = str(script_timestamp).replace(" ", "_")
             query_api_log = format_script_timestamp + "_" + "list_text_" + list_operation_name + ".log"
-            with open(query_api_log, 'a') as logfile:
+            operations_dir = "compute_operations_logs"
+            with open(operations_dir+"/"+query_api_log, 'a') as logfile:
                 try:
-                    logfile.write(os.system('gcloud compute operations list --filter="user=' + list_operation_name + quotes + ' | tee -a ' + query_api_log))
+                    logfile.write(os.system('gcloud compute operations list --filter="user=' + list_operation_name + quotes + ' | tee -a ' + operations_dir+"/"+query_api_log))
                     logfile.close()
-                    print("\nGenerated log file: " + query_api_log + " which you can view and query from the compute operations menu")
+                    print("\nGenerated log file: " +query_api_log + " which you can view and query from the compute operations menu")
                     input('\nPress enter to get back to the compute operations menu: ')
                     now = datetime.now()
                     with open(gcp_system_log_file, 'a') as logfile:
-                        logfile.write(str(now) + " + Generated log file: " + query_api_log + "\n")
+                        logfile.write(str(now) + " + Generated log file: " +query_api_log + "\n")
                         logfile.close()
                     now = datetime.now()
                     with open(gcp_system_log_file, 'a') as logfile:
@@ -732,11 +736,11 @@ def compute_engine_module():
                         logfile.close()
                     compute_operations_list_describe()
                 except:
-                    print("\nGenerated log file: " + query_api_log + " which you can view and query from the compute operations menu")
+                    print("\nGenerated log file: " +query_api_log + " which you can view and query from the compute operations menu")
                     input('\nPress enter to get back to the compute operations menu: ')
                     now = datetime.now()
                     with open(gcp_system_log_file, 'a') as logfile:
-                        logfile.write(str(now) + " + Generated log file: " + query_api_log + "\n")
+                        logfile.write(str(now) + " + Generated log file: " +"/"+query_api_log + "\n")
                         logfile.close()
                     now = datetime.now()
                     with open(gcp_system_log_file, 'a') as logfile:
@@ -762,12 +766,182 @@ def compute_engine_module():
                 logfile.close()
             compute_operations_list_describe()
 
+        def compute_operations_show_generated_logs():
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Accessed COMPUTE OPERATIONS show all logs mode\n")
+                logfile.close()
+            operations_dir = "compute_operations_logs"
+            logs_string_var = "_list_"
+            print('\nView compute operations logs menu accessed')
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            check_file = os.path.isfile(logs_string_var)
+            print('\nListing generated logs in path: ' + dir_path + "/" + operations_dir + ': \n')
+            for i in os.listdir(path=dir_path + "/" + operations_dir):
+                if logs_string_var in i:
+                    print(i)
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + ' - Listed all user generated logfiles in system.' +"\n")
+                logfile.close()
+            input('\nPress enter to get back to the main menu: ')
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS show all logs mode\n")
+                logfile.close()
+            compute_operations_list_describe()
+
+        def compute_operations_read_log_file():
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            operations_dir = "compute_operations_logs"
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Accessed COMPUTE OPERATIONS read logs mode\n")
+                logfile.close()
+            logs_string_var = "_list_"
+            read_log_file=input('\nType the compute log file you want to read: ')
+            if read_log_file in os.listdir(path=dir_path+"/"+operations_dir):
+                    read_file=open(operations_dir+"/"+read_log_file, 'r')
+                    log_read=read_file.readlines()
+                    for line in log_read:
+                        print(line)
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + ' - Read logfile: '+read_log_file+"\n")
+                        logfile.close()
+                    input('\nPress enter to get back to the main menu: ')
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS read logs mode\n")
+                        logfile.close()
+                    compute_operations_list_describe()
+            else:
+                print('\nLog file '+read_log_file+' not found.')
+                input('\nPress enter to get back to the main menu: ')
+                with open(gcp_system_log_file, 'a') as logfile:
+                    logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS read logs mode\n")
+                    logfile.close()
+                compute_operations_list_describe()
+
+        def compute_operations_find_regexp():
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Accessed COMPUTE OPERATIONS find regexp logs mode\n")
+                logfile.close()
+            operations_dir = "compute_operations_logs"
+            global check_file, dir_path, test_case_string_var
+            logs_string_var = "_list_"
+            print('\nView compute operations logs menu accessed')
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            check_file = os.path.isfile(logs_string_var)
+            provide_log=input('\nProvide the name of the log, in which you want to find a regexp: ')
+            if provide_log in os.listdir(path=dir_path + "/" + operations_dir):
+                print('\nLogfile: '+provide_log+' found.')
+                loop=0
+                while loop==0:
+                    compute_log_regexp=input("\nType the regexp you want to find in this logfile: ")
+                    read_file = open(operations_dir + "/" + provide_log, 'r')
+                    log_read = read_file.readlines()
+                    for line in log_read:
+                        if compute_log_regexp in line:
+                            print(line)
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + ' - Searched for regexp: '+compute_log_regexp+" in logfile: "+provide_log+"\n")
+                        logfile.close()
+                    print('\nTo find another regular expresion in log file: '+provide_log+' press enter.')
+                    find_again=input('\nTo get back to main menu type "b": ')
+                    if find_again == "b":
+                        print('\nYou decided to stop searching in '+provide_log)
+                        input('\nPress enter to get back to the main menu: ')
+                        now = datetime.now()
+                        with open(gcp_system_log_file, 'a') as logfile:
+                            logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS find regexp mode\n")
+                            logfile.close()
+                        compute_operations_list_describe()
+            else:
+                print('\nUnable to find log: '+provide_log)
+                input('\nPress enter to get back to the main menu: ')
+                with open(gcp_system_log_file, 'a') as logfile:
+                    logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS find regexp mode\n")
+                    logfile.close()
+                compute_operations_list_describe()
+
+        def compute_operations_delete_log():
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Accessed COMPUTE OPERATIONS delete logs mode\n")
+                logfile.close()
+            logs_string_var = "_list_"
+            operations_dir = "compute_operations_logs"
+            print('\nNOTE: only compute log files containing syntax: ' + logs_string_var + ' will be removed.')
+            delete_compute_log_files = input("\nType the compute log file to delete. If it is more than one, separate them with spaces: ")
+            logs_to_delete = []
+            for log in delete_compute_log_files.split():
+                logs_to_delete.append(log)
+            for log in logs_to_delete:
+                if logs_string_var in log:
+                    os.remove(operations_dir + "/" + log)
+                    print('\nRemoved file: ' + log)
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + ' - Deleted compute log file '+log+"\n")
+                        logfile.close()
+            input('\nPress enter to get back to the main menu: ')
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS delete logs mode\n")
+                logfile.close()
+            compute_operations_list_describe()
+
+        def compute_operations_delete_all_logs():
+            operations_dir = "compute_operations_logs"
+            logs_string_var = "_list_"
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Accessed COMPUTE OPERATIONS delete ALL logs mode\n")
+                logfile.close()
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            loop=0
+            while loop==0:
+                provide_log = input('\nWARNING, this will delete all the compute generated logs in the system. Confirm y/n? : ')
+                if provide_log=='y':
+                    for log in os.listdir(path=dir_path + "/" + operations_dir):
+                        if logs_string_var in log:
+                            os.remove(path=dir_path + "/" + operations_dir+"/"+log)
+                            print('\nRemoved compute logfile: ' + log)
+                            with open(gcp_system_log_file, 'a') as logfile:
+                                logfile.write(str(now) + ' - Deleted compute log file '+log+"\n")
+                                logfile.close()
+                    input('\nPress enter to get back to the main menu: ')
+                    now = datetime.now()
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS delete ALL logs mode\n")
+                        logfile.close()
+                    compute_operations_list_describe()
+                if provide_log == 'n':
+                    print('\nAborted operation to delete all log files from the system.')
+                    input('\nPress enter to get back to the main menu: ')
+                    now = datetime.now()
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS delete ALL logs mode\n")
+                        logfile.close()
+                    compute_operations_list_describe()
+                else:
+                    loop=0
+
+
         print('\nCompute operations mode accessed.\n')
         print('************************************************')
         print('       COMPUTE OPERATIONS MAIN MENU            \n')
+        print('   Compute query and log generation section\n')
+        print('NOTE: options  1 and 2 generate log files based on a username,')
+        print('which show compute operations executed by the searched user.\n')
         print('- 1 - JSON format - List compute operations - filter by username')
         print('- 2 - TEXT format - List compute operations - filter by username')
+        print('\n Read and search section\n')
         print('- 3 - Describe a specific compute operation')
+        print('- 4 - Show all user generated compute log files in system')
+        print('- 5 - Read a log file')
+        print('- 6 - Find a regular expresion in a log')
+        print('\n Logfiles deletion section\n')
+        print('- 7 - Delete a log')
+        print('- 8 - Delete all generated logs in system')
+        print(' ')
         print('- c <-- Back to compute engine main menu')
         print('- b <-- Back to main menu')
         selection=input('\nType an option from the menu and press enter: ')
@@ -777,6 +951,16 @@ def compute_engine_module():
             compute_operations_list_text()
         if selection=='3':
             compute_operations_describe()
+        if selection=='4':
+            compute_operations_show_generated_logs()
+        if selection=='5':
+            compute_operations_read_log_file()
+        if selection=='6':
+            compute_operations_find_regexp()
+        if selection=='7':
+            compute_operations_delete_log()
+        if selection=='8':
+            compute_operations_delete_all_logs()
         if selection=='c':
             compute_engine_module()
         if selection=='b':
