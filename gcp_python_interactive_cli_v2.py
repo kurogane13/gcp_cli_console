@@ -16,6 +16,9 @@ def free_command_input_menu():
 gcp_scripts_dir='gcp_automation_test_scripts'
 os.system('mkdir -p '+gcp_scripts_dir)
 
+operations_dir = "compute_operations_logs"
+os.system('mkdir -p '+operations_dir)
+
 def check_billing_project():
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
@@ -877,16 +880,43 @@ def compute_engine_module():
                 logs_to_delete.append(log)
             for log in logs_to_delete:
                 if logs_string_var in log:
-                    os.remove(operations_dir + "/" + log)
-                    print('\nRemoved file: ' + log)
+                    try:
+                        os.remove(operations_dir + "/" + log)
+                        print('\nRemoved file: ' + log)
+                        with open(gcp_system_log_file, 'a') as logfile:
+                            logfile.write(str(now) + ' - Deleted compute log file '+log+"\n")
+                            logfile.close()
+                    except:
+                        print('\n ! ERROR - File: '+str(log)+' was not found in '+operations_dir)
+                        input('\nPress enter to get back to the main menu: ')
+                        with open(gcp_system_log_file, 'a') as logfile:
+                            logfile.write('\n'+str(now) + " ! ERROR - File: "+"'"+str(log)+"'"+' was not found in '+operations_dir)
+                            logfile.close()
+                        now = datetime.now()
+                        with open(gcp_system_log_file, 'a') as logfile:
+                            logfile.write('\n'+str(now) + " --> Exited COMPUTE OPERATIONS delete logs mode\n")
+                            logfile.close()
+                        compute_operations_list_describe()
+
+                else:
+                    print('\n! ERROR - File: '+str(log)+' was not found in '+operations_dir)
+                    input('\nPress enter to get back to the main menu: ')
+                    now = datetime.now()
                     with open(gcp_system_log_file, 'a') as logfile:
-                        logfile.write(str(now) + ' - Deleted compute log file '+log+"\n")
+                        logfile.write(str(now) + " ! ERROR - File: "+"'"+str(log)+"'"+' was not found in '+operations_dir)
                         logfile.close()
-            input('\nPress enter to get back to the main menu: ')
-            with open(gcp_system_log_file, 'a') as logfile:
-                logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS delete logs mode\n")
-                logfile.close()
-            compute_operations_list_describe()
+                    now = datetime.now()
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write('\n'+str(now) + " --> Exited COMPUTE OPERATIONS delete logs mode\n")
+                        logfile.close()
+                    compute_operations_list_describe()
+            if "" in delete_compute_log_files:
+                input('\nPress enter to get back to the main menu: ')
+                now = datetime.now()
+                with open(gcp_system_log_file, 'a') as logfile:
+                    logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS delete logs mode\n")
+                    logfile.close()
+                    compute_operations_list_describe()
 
         def compute_operations_delete_all_logs():
             operations_dir = "compute_operations_logs"
