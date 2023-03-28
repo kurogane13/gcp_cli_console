@@ -692,7 +692,7 @@ def compute_engine_module():
                         logfile.close()
                     now = datetime.now()
                     with open(gcp_system_log_file, 'a') as logfile:
-                        logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS JSON format list mode\n")
+                        logfile.write(str(now) + " <-- Exited COMPUTE OPERATIONS JSON format list mode\n")
                         logfile.close()
                     compute_operations_list_describe()
                 except:
@@ -704,7 +704,7 @@ def compute_engine_module():
                         logfile.close()
                     now = datetime.now()
                     with open(gcp_system_log_file, 'a') as logfile:
-                        logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS JSON format list mode\n")
+                        logfile.write(str(now) + " <-- Exited COMPUTE OPERATIONS JSON format list mode\n")
                         logfile.close()
                     compute_operations_list_describe()
 
@@ -735,7 +735,7 @@ def compute_engine_module():
                         logfile.close()
                     now = datetime.now()
                     with open(gcp_system_log_file, 'a') as logfile:
-                        logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS TEXT format list mode\n")
+                        logfile.write(str(now) + " <-- Exited COMPUTE OPERATIONS TEXT format list mode\n")
                         logfile.close()
                     compute_operations_list_describe()
                 except:
@@ -747,7 +747,7 @@ def compute_engine_module():
                         logfile.close()
                     now = datetime.now()
                     with open(gcp_system_log_file, 'a') as logfile:
-                        logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS TEXT format list mode\n")
+                        logfile.write(str(now) + " <-- Exited COMPUTE OPERATIONS TEXT format list mode\n")
                         logfile.close()
                     compute_operations_list_describe()
 
@@ -765,7 +765,7 @@ def compute_engine_module():
             input('\nPress enter to get back to the compute operations menu: ')
             now = datetime.now()
             with open(gcp_system_log_file, 'a') as logfile:
-                logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS describe mode\n")
+                logfile.write(str(now) + " <-- Exited COMPUTE OPERATIONS describe mode\n")
                 logfile.close()
             compute_operations_list_describe()
 
@@ -789,7 +789,7 @@ def compute_engine_module():
             input('\nPress enter to get back to the main menu: ')
             now = datetime.now()
             with open(gcp_system_log_file, 'a') as logfile:
-                logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS show all logs mode\n")
+                logfile.write(str(now) + " <-- Exited COMPUTE OPERATIONS show all logs mode\n")
                 logfile.close()
             compute_operations_list_describe()
 
@@ -812,14 +812,14 @@ def compute_engine_module():
                         logfile.close()
                     input('\nPress enter to get back to the main menu: ')
                     with open(gcp_system_log_file, 'a') as logfile:
-                        logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS read logs mode\n")
+                        logfile.write(str(now) + " <-- Exited COMPUTE OPERATIONS read logs mode\n")
                         logfile.close()
                     compute_operations_list_describe()
             else:
                 print('\nLog file '+read_log_file+' not found.')
                 input('\nPress enter to get back to the main menu: ')
                 with open(gcp_system_log_file, 'a') as logfile:
-                    logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS read logs mode\n")
+                    logfile.write(str(now) + " <-- Exited COMPUTE OPERATIONS read logs mode\n")
                     logfile.close()
                 compute_operations_list_describe()
 
@@ -855,14 +855,14 @@ def compute_engine_module():
                         input('\nPress enter to get back to the main menu: ')
                         now = datetime.now()
                         with open(gcp_system_log_file, 'a') as logfile:
-                            logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS find regexp mode\n")
+                            logfile.write(str(now) + " <-- Exited COMPUTE OPERATIONS find regexp mode\n")
                             logfile.close()
                         compute_operations_list_describe()
             else:
                 print('\nUnable to find log: '+provide_log)
                 input('\nPress enter to get back to the main menu: ')
                 with open(gcp_system_log_file, 'a') as logfile:
-                    logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS find regexp mode\n")
+                    logfile.write(str(now) + " <-- Exited COMPUTE OPERATIONS find regexp mode\n")
                     logfile.close()
                 compute_operations_list_describe()
 
@@ -894,7 +894,7 @@ def compute_engine_module():
                             logfile.close()
                         now = datetime.now()
                         with open(gcp_system_log_file, 'a') as logfile:
-                            logfile.write('\n'+str(now) + " --> Exited COMPUTE OPERATIONS delete logs mode\n")
+                            logfile.write('\n'+str(now) + " <-- Exited COMPUTE OPERATIONS delete logs mode\n")
                             logfile.close()
                         compute_operations_list_describe()
 
@@ -907,14 +907,14 @@ def compute_engine_module():
                         logfile.close()
                     now = datetime.now()
                     with open(gcp_system_log_file, 'a') as logfile:
-                        logfile.write('\n'+str(now) + " --> Exited COMPUTE OPERATIONS delete logs mode\n")
+                        logfile.write('\n'+str(now) + " <-- Exited COMPUTE OPERATIONS delete logs mode\n")
                         logfile.close()
                     compute_operations_list_describe()
             if "" in delete_compute_log_files:
                 input('\nPress enter to get back to the main menu: ')
                 now = datetime.now()
                 with open(gcp_system_log_file, 'a') as logfile:
-                    logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS delete logs mode\n")
+                    logfile.write(str(now) + " <-- Exited COMPUTE OPERATIONS delete logs mode\n")
                     logfile.close()
                     compute_operations_list_describe()
 
@@ -940,7 +940,7 @@ def compute_engine_module():
                     input('\nPress enter to get back to the main menu: ')
                     now = datetime.now()
                     with open(gcp_system_log_file, 'a') as logfile:
-                        logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS delete ALL logs mode\n")
+                        logfile.write(str(now) + " <-- Exited COMPUTE OPERATIONS delete ALL logs mode\n")
                         logfile.close()
                     compute_operations_list_describe()
                 if provide_log == 'n':
@@ -948,12 +948,61 @@ def compute_engine_module():
                     input('\nPress enter to get back to the main menu: ')
                     now = datetime.now()
                     with open(gcp_system_log_file, 'a') as logfile:
-                        logfile.write(str(now) + " --> Exited COMPUTE OPERATIONS delete ALL logs mode\n")
+                        logfile.write(str(now) + " <-- Exited COMPUTE OPERATIONS delete ALL logs mode\n")
                         logfile.close()
                     compute_operations_list_describe()
                 else:
                     loop=0
+                    
+        def compute_operations_delete_logs_with_regexp():
+            operations_dir = "compute_operations_logs"
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " --> Accessed COMPUTE OPERATIONS delete logs based on regexp mode\n")
+                logfile.close()
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            loop=0
+            while loop==0:
+                provide_regexp= input('\nType a regular expression, to delete all the file names that contain it: ')
+                if provide_regexp== "":
+                        print('\nNothing was typed')
+                        input('\nPress enter to re-attempt: ')
+                        now = datetime.now()
+                        with open(gcp_system_log_file, 'a') as logfile:
+                            logfile.write(str(now)+" ! Nothing was typed. No regexp was provided to find and delete log files"+"\n")
+                            logfile.close()
+                        compute_operations_delete_logs_with_regexp()
+                items_to_delete = []
+                for log in os.listdir(path=dir_path + "/" + operations_dir):
+                    if provide_regexp in log:
+                        os.remove(path=dir_path + "/" + operations_dir+"/"+log)
+                        items_to_delete.append(str(log))
+                        print('\nFound regexp '+"'"+provide_regexp+"'"+' in logfile: '+str(log))
+                        print('\nRemoved compute logfile: ' + log)
+                        now = datetime.now()
+                        with open(gcp_system_log_file, 'a') as logfile:
+                            logfile.write(str(now) + " ! Found regexp "+"'"+provide_regexp+"'"+' in logfile: '+str(log)+"\n")
+                            logfile.write(str(now) + ' - Deleted compute log file '+log+"\n")
+                            logfile.close()
 
+                if not items_to_delete:
+                    print('\nRegular expresion '+str(provide_regexp)+' was not found in any files. No log file was deleted')
+                    input('\nOperation executed, press enter to get back to the main menu: ')
+                    now = datetime.now()
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + " <-- Exited COMPUTE OPERATIONS delete logs based on regexp mode"+"\n")
+                        logfile.write(str(now)+' ! Regular expresion '+str(provide_regexp)+' was not found in any files. No log file was deleted'+"\n")
+                        logfile.close()
+                    compute_operations_list_describe()
+                else:
+                    print('\nLog files containing regexp '+"'"+str(provide_regexp)+"'"+' were deleted')
+                    input('\nOperation executed, press enter to get back to the main menu: ')
+                    now = datetime.now()
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) +' ! Log files containing regexp '+"'"+str(provide_regexp)+"'"+' were deleted'+"\n")
+                        logfile.write(str(now) + " <-- Exited COMPUTE OPERATIONS delete logs based on regexp mode"+"\n")
+                        logfile.close()
+                    compute_operations_list_describe()
 
         print('\nCompute operations mode accessed.\n')
         print('************************************************')
@@ -970,7 +1019,8 @@ def compute_engine_module():
         print('- 6 - Find a regular expresion in a log')
         print('\n Logfiles deletion section\n')
         print('- 7 - Delete a log')
-        print('- 8 - Delete all generated logs in system')
+        print('- 8 - Delete all log files, which contain a regexp in its filename')
+        print('- 9 - Delete all generated logs in system')
         print(' ')
         print('- c <-- Back to compute engine main menu')
         print('- b <-- Back to main menu')
@@ -990,6 +1040,8 @@ def compute_engine_module():
         if selection=='7':
             compute_operations_delete_log()
         if selection=='8':
+            compute_operations_delete_logs_with_regexp()
+        if selection=='9':
             compute_operations_delete_all_logs()
         if selection=='c':
             compute_engine_module()

@@ -1141,6 +1141,54 @@ def test_case_module():
         else:
             delete_all_test_cases()
 
+    def delete_all_test_cases_containing_regexp():
+        gcp_system_log_file = 'gcp_system_log.log'
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed Delete ALL scripts containing regexp mode\n")
+            logfile.close()
+        test_case_string_var = "_tst_k_s_"
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        delete_regexp_files=input('\nType a regular expresion, to delete all test case scripts that contain it: ')
+        if delete_regexp_files== "":
+            print('\nNothing was typed')
+            input('\nPress enter to re-attempt: ')
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now)+" ! Nothing was typed. No regexp was provided to find and delete log files"+"\n")
+                logfile.close()
+            delete_all_test_cases_containing_regexp()
+        items_to_delete = []
+        for case in os.listdir(path=dir_path+ "/" + gcp_scripts_dir):
+            if delete_regexp_files in case:
+                os.remove(path=dir_path+ "/" + gcp_scripts_dir + "/" + case)
+                items_to_delete.append(str(case))
+                print('\nRegular expresion: '+str(now)+' was found in test case script: '+case)
+                print('\nRemoved test case: '+case)
+                now = datetime.now()
+                with open(gcp_system_log_file, 'a') as logfile:
+                    logfile.write(str(now) + " ! Regular expresion: "+"'"+str(delete_regexp_files)+"'"+" was found in test case script: "+case)
+                    logfile.write(str(now) + " - Deleted script file: "+case+" from path: "+gcp_scripts_dir+"\n")
+                    logfile.close()
+                input('\nOperation executed, press enter to get back to the main menu: ')
+                test_case_module()
+        if not items_to_delete:
+            print('\nRegular expresion '+"'"+str(delete_regexp_files)+"'"+' was not found in any files. No log file was deleted')
+            input('\nOperation executed, press enter to get back to the main menu: ')
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " ! Regular expresion "+"'"+str(delete_regexp_files)+"'"+" was not found in any files. No log file was deleted"+"\n")
+                logfile.close()
+            test_case_module()
+        else:
+            print('\nTest script files containing regexp '+"'"+str(delete_regexp_files)+"'"+' were deleted')
+            input('\nOperation executed, press enter to get back to the main menu: ')
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) +' ! Test script files containing regexp '+"'"+str(delete_regexp_files)+"'"+' were deleted'+"\n")
+                logfile.write(str(now) + " <-- Exited Delete ALL scripts containing regexp mode"+"\n")
+                logfile.close()
+            test_case_module()
 
     print('\nMode T accessed.\n')
     print("*******************************************")
@@ -1149,9 +1197,10 @@ def test_case_module():
     print('2 - Run test case/s')
     print('3 - Delete test case file/s')
     print('4 - Delete all test case files')
-    print('5 - View saved test cases')
-    print('6 - Read test case steps from file')
-    print('7 - Read code in a test case. Shows all file content')
+    print('5 - Delete all test case files containing regexp in filename')
+    print('6 - View saved test cases')
+    print('7 - Read test case steps from file')
+    print('8 - Read code in a test case. Shows all file content')
     print('c <- Compute engine module')
     print('b <- Back to Main menu')
     test_case_menu_selection=input('\nSelect an option from the menu and press enter: ')
@@ -1164,10 +1213,12 @@ def test_case_module():
     if test_case_menu_selection == '4':
         delete_all_test_cases()
     if test_case_menu_selection == '5':
+        delete_all_test_cases_containing_regexp()
+    if test_case_menu_selection == '6':
         view_test_cases()
-    if test_case_menu_selection == "6":
-        reading_steps_from_file()
     if test_case_menu_selection == "7":
+        reading_steps_from_file()
+    if test_case_menu_selection == "8":
         read_code_from_script()
     if test_case_menu_selection == 'c':
         return_to_compute_menu()
