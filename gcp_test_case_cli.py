@@ -1018,7 +1018,7 @@ def test_case_module():
                 logfile.close()
             file_to_read=input('\nProvide file name to read: ')
             string_to_read="Step:"
-            print("\nListing test case steps for file: "+file_to_read+'\n')
+            #print("\nListing test case steps for file: "+file_to_read+'\n')
             with open(gcp_scripts_dir+"/"+file_to_read, 'r') as filedata:     # Opening the given file in read-only mode
                for line in filedata:
                     if string_to_read in line:
@@ -1048,7 +1048,7 @@ def test_case_module():
                 logfile.write(str(now) + " --> Accessed Read script code mode\n")
                 logfile.close()
             file_to_read=input('\nProvide file name to read: ')
-            print("\nViewing all code in file: "+file_to_read+'\n')
+            #print("\nViewing all code in file: "+file_to_read+'\n')
             with open(gcp_scripts_dir+"/"+file_to_read, 'r') as filedata:     # Opening the given file in read-only mode
                for line in filedata:
                     print(line)
@@ -1155,29 +1155,30 @@ def test_case_module():
             input('\nPress enter to re-attempt: ')
             now = datetime.now()
             with open(gcp_system_log_file, 'a') as logfile:
-                logfile.write(str(now)+" ! Nothing was typed. No regexp was provided to find and delete log files"+"\n")
+                logfile.write(str(now)+" ! Nothing was typed. No regexp was provided to find and delete test script files"+"\n")
                 logfile.close()
             delete_all_test_cases_containing_regexp()
         items_to_delete = []
         for case in os.listdir(path=dir_path+ "/" + gcp_scripts_dir):
             if delete_regexp_files in case:
-                os.remove(path=dir_path+ "/" + gcp_scripts_dir + "/" + case)
                 items_to_delete.append(str(case))
-                print('\nRegular expresion: '+str(now)+' was found in test case script: '+case)
-                print('\nRemoved test case: '+case)
-                now = datetime.now()
-                with open(gcp_system_log_file, 'a') as logfile:
-                    logfile.write(str(now) + " ! Regular expresion: "+"'"+str(delete_regexp_files)+"'"+" was found in test case script: "+case)
-                    logfile.write(str(now) + " - Deleted script file: "+case+" from path: "+gcp_scripts_dir+"\n")
-                    logfile.close()
-                input('\nOperation executed, press enter to get back to the main menu: ')
-                test_case_module()
+
+        for i in items_to_delete:
+            os.remove(path=dir_path+ "/" + gcp_scripts_dir + "/" + i)
+            print('\nRegular expresion: '+str(now)+' was found in test case script: '+i)
+            print('\nRemoved test case: '+case)
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " ! Regular expresion: "+"'"+str(delete_regexp_files)+"'"+" was found in test case script: "+i)
+                logfile.write(str(now) + " - Deleted script file: "+case+" from path: "+gcp_scripts_dir+"\n")
+                logfile.close()
+
         if not items_to_delete:
             print('\nRegular expresion '+"'"+str(delete_regexp_files)+"'"+' was not found in any files. No log file was deleted')
             input('\nOperation executed, press enter to get back to the main menu: ')
             now = datetime.now()
             with open(gcp_system_log_file, 'a') as logfile:
-                logfile.write(str(now) + " ! Regular expresion "+"'"+str(delete_regexp_files)+"'"+" was not found in any files. No log file was deleted"+"\n")
+                logfile.write(str(now) + " ! Regular expresion "+"'"+str(delete_regexp_files)+"'"+" was not found in any files. No script file was deleted"+"\n")
                 logfile.close()
             test_case_module()
         else:

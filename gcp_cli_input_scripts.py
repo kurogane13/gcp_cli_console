@@ -291,16 +291,68 @@ def free_command_input():
             free_command_input()
         else:
             delete_all_test_cases()
+
+    def delete_all_test_cases_based_regexp():
+        gcp_system_log_file = 'gcp_system_log.log'
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed Delete ALL scripts containing regexp mode\n")
+            logfile.close()
+        test_case_string_var = "_tst_k_s_"
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        delete_regexp_files=input('\nType a regular expresion, to delete all test case scripts that contain it: ')
+        if delete_regexp_files== "":
+            print('\nNothing was typed')
+            input('\nPress enter to re-attempt: ')
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now)+" ! Nothing was typed. No regexp was provided to find and delete log files"+"\n")
+                logfile.close()
+            delete_all_test_cases_based_regexp()
+        items_to_delete = []
+        for case in os.listdir(path=dir_path+ "/" + gcp_scripts_dir):
+            if delete_regexp_files in case:
+                items_to_delete.append(str(case))
+
+        for i in items_to_delete:
+            os.remove(path=dir_path+ "/" + gcp_scripts_dir + "/" + i)
+            print('\nRegular expresion: '+str(now)+' was found in test case script: '+i)
+            print('\nRemoved test case: '+i)
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " ! Regular expresion: "+"'"+str(delete_regexp_files)+"'"+" was found in test case script: "+i)
+                logfile.write(str(now) + " - Deleted script file: "+i+" from path: "+gcp_scripts_dir+"\n")
+                logfile.close()
+
+        if not items_to_delete:
+            print('\nRegular expresion '+"'"+str(delete_regexp_files)+"'"+' was not found in any files. No script file was deleted')
+            input('\nOperation executed, press enter to get back to the main menu: ')
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + " ! Regular expresion "+"'"+str(delete_regexp_files)+"'"+" was not found in any files. No script file was deleted"+"\n")
+                logfile.close()
+            free_command_input()
+        else:
+            print('\nTest script files containing regexp '+"'"+str(delete_regexp_files)+"'"+' were deleted')
+            input('\nOperation executed, press enter to get back to the main menu: ')
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) +' ! Test script files containing regexp '+"'"+str(delete_regexp_files)+"'"+' were deleted'+"\n")
+                logfile.write(str(now) + " <-- Exited Delete ALL scripts containing regexp mode"+"\n")
+                logfile.close()
+            free_command_input()
+
     print('Mode F accesed. Free command line input mode.\n')
     print("***************************************************************")
-    print('      GCP FREE COMMAND LINE INPUT - SCRIPT/TEST CASE BUILDER  \n')
+    print('     GCP FREE COMMAND LINE INPUT - SCRIPT/TEST CASE BUILDER  \n')
     print('1 - Build a new test case by directly inputting your commands')
     print('2 - Run test case/s')
     print('3 - Delete test case file/s')
     print('4 - Delete all test case files')
-    print('5 - View saved test cases')
-    print('6 - Read test case commands from file')
-    print('7 - View all code in file. Shows entire file content')
+    print('5 - Delete test cases based on regexp in filename')
+    print('6 - View saved test cases')
+    print('7 - Read test case commands from file')
+    print('8 - View all code in file. Shows entire file content')
     print('c <- Compute engine module')
     print('b <- Back to Main menu')
     free_command_menu_selection=input('\nSelect an option from the menu and press enter: ')
@@ -313,10 +365,12 @@ def free_command_input():
     if free_command_menu_selection == '4':
         delete_all_test_cases()
     if free_command_menu_selection == '5':
-        view_test_cases()
+        delete_all_test_cases_based_regexp()
     if free_command_menu_selection == '6':
-        reading_steps_from_file()
+        view_test_cases()
     if free_command_menu_selection == '7':
+        reading_steps_from_file()
+    if free_command_menu_selection == '8':
         read_script_code()
     if free_command_menu_selection == 'c':
         return_to_compute_menu()

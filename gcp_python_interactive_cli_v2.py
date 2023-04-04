@@ -975,15 +975,17 @@ def compute_engine_module():
                 items_to_delete = []
                 for log in os.listdir(path=dir_path + "/" + operations_dir):
                     if provide_regexp in log:
-                        os.remove(path=dir_path + "/" + operations_dir+"/"+log)
                         items_to_delete.append(str(log))
-                        print('\nFound regexp '+"'"+provide_regexp+"'"+' in logfile: '+str(log))
-                        print('\nRemoved compute logfile: ' + log)
-                        now = datetime.now()
-                        with open(gcp_system_log_file, 'a') as logfile:
-                            logfile.write(str(now) + " ! Found regexp "+"'"+provide_regexp+"'"+' in logfile: '+str(log)+"\n")
-                            logfile.write(str(now) + ' - Deleted compute log file '+log+"\n")
-                            logfile.close()
+
+                for i in items_to_delete:
+                    os.remove(path=dir_path + "/" + operations_dir+"/"+i)
+                    print('\nFound regexp '+"'"+provide_regexp+"'"+' in logfile: '+str(i))
+                    print('\nRemoved compute logfile: ' + i)
+                    now = datetime.now()
+                    with open(gcp_system_log_file, 'a') as logfile:
+                        logfile.write(str(now) + " ! Found regexp "+"'"+provide_regexp+"'"+' in logfile: '+str(i)+"\n")
+                        logfile.write(str(now) + ' - Deleted compute log file '+i+"\n")
+                        logfile.close()
 
                 if not items_to_delete:
                     print('\nRegular expresion '+str(provide_regexp)+' was not found in any files. No log file was deleted')
