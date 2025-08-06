@@ -3,6 +3,8 @@ import runpy
 import sys
 import datetime
 from datetime import datetime
+import subprocess
+import json
 
 now=datetime.now()
 
@@ -500,8 +502,59 @@ def compute_engine_module():
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(str(now) + " --> Accessed COMPUTE SSH VM SIMPLE mode\n")
             logfile.close()
-        print('\nSSH vm simple mode accesed.\n')
-        vm_name = input("Provide the Vm instance name to connect to: ")
+        print('\nSSH vm simple mode accessed.\n')
+        
+        # List all VM instances with details first
+        print('Fetching VM instance information...\n')
+        try:
+            # Get VM instances in JSON format for detailed parsing
+            result = subprocess.run(['gcloud', 'compute', 'instances', 'list', '--format=json'], 
+                                  capture_output=True, text=True, check=True)
+            instances_data = json.loads(result.stdout)
+            
+            if not instances_data:
+                print('No VM instances found in the current project.')
+                input('\nPress enter to get back to the compute engine menu: ')
+                compute_engine_module()
+                return
+            
+            # Display instances in a formatted table
+            print('=' * 120)
+            print(f"{'NAME':<20} {'ZONE':<25} {'MACHINE TYPE':<15} {'STATUS':<10} {'INTERNAL IP':<15} {'EXTERNAL IP':<15}")
+            print('=' * 120)
+            
+            for instance in instances_data:
+                name = instance.get('name', 'N/A')
+                zone = instance.get('zone', 'N/A').split('/')[-1]  # Extract zone name from full path
+                machine_type = instance.get('machineType', 'N/A').split('/')[-1]  # Extract machine type name
+                status = instance.get('status', 'N/A')
+                
+                # Extract IP addresses
+                internal_ip = 'N/A'
+                external_ip = 'N/A'
+                network_interfaces = instance.get('networkInterfaces', [])
+                if network_interfaces:
+                    internal_ip = network_interfaces[0].get('networkIP', 'N/A')
+                    access_configs = network_interfaces[0].get('accessConfigs', [])
+                    if access_configs:
+                        external_ip = access_configs[0].get('natIP', 'N/A')
+                
+                print(f"{name:<20} {zone:<25} {machine_type:<15} {status:<10} {internal_ip:<15} {external_ip:<15}")
+            
+            print('=' * 120)
+            print()
+            
+        except subprocess.CalledProcessError as e:
+            print(f'Error fetching VM instances: {e.stderr}')
+            print('Proceeding with manual VM name input...\n')
+        except json.JSONDecodeError as e:
+            print(f'Error parsing VM instance data: {e}')
+            print('Proceeding with manual VM name input...\n')
+        except Exception as e:
+            print(f'Unexpected error: {e}')
+            print('Proceeding with manual VM name input...\n')
+        
+        vm_name = input("Provide the VM instance name to connect to: ")
         print("\nAttempting to connect to vm instance...")
         ssh_vm_instance_simple='gcloud compute ssh '+vm_name
         os.system(ssh_vm_instance_simple)
@@ -1194,6 +1247,177 @@ def compute_engine_module():
             input('\nInvalid option selected, you must type a number or letter from the menu. Press enter to get back to the menu: ')
             compute_advanced_module()
 
+    def compute_ssh_key_management():
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " --> Accessed SSH KEY MANAGEMENT mode\n")
+            logfile.close()
+        
+        print('\nSSH Key Management mode accessed.\n')
+        print('This function will list all VM instances and allow you to add SSH keys for authentication.\n')
+        
+        # List all VM instances with details
+        print('Fetching VM instance information...\n')
+        try:
+            # Get VM instances in JSON format for detailed parsing
+            result = subprocess.run(['gcloud', 'compute', 'instances', 'list', '--format=json'], 
+                                  capture_output=True, text=True, check=True)
+            instances_data = json.loads(result.stdout)
+            
+            if not instances_data:
+                print('No VM instances found in the current project.')
+                input('\nPress enter to get back to the compute engine menu: ')
+                compute_engine_module()
+                return
+            
+            # Display instances in a formatted table
+            print('=' * 120)
+            print(f"{'NAME':<20} {'ZONE':<25} {'MACHINE TYPE':<15} {'STATUS':<10} {'INTERNAL IP':<15} {'EXTERNAL IP':<15}")
+            print('=' * 120)
+            
+            for instance in instances_data:
+                name = instance.get('name', 'N/A')
+                zone = instance.get('zone', 'N/A').split('/')[-1]  # Extract zone name from full path
+                machine_type = instance.get('machineType', 'N/A').split('/')[-1]  # Extract machine type name
+                status = instance.get('status', 'N/A')
+                
+                # Extract IP addresses
+                internal_ip = 'N/A'
+                external_ip = 'N/A'
+                network_interfaces = instance.get('networkInterfaces', [])
+                if network_interfaces:
+                    internal_ip = network_interfaces[0].get('networkIP', 'N/A')
+                    access_configs = network_interfaces[0].get('accessConfigs', [])
+                    if access_configs:
+                        external_ip = access_configs[0].get('natIP', 'N/A')
+                
+                print(f"{name:<20} {zone:<25} {machine_type:<15} {status:<10} {internal_ip:<15} {external_ip:<15}")
+            
+            print('=' * 120)
+            print()
+            
+            # Prompt for VM selection
+            vm_name = input('Enter the VM instance name to add SSH keys to (or "b" to go back): ')
+            
+            if vm_name.lower() == 'b':
+                compute_engine_module()
+                return
+            
+            # Verify the VM exists and get its zone
+            selected_vm = None
+            for instance in instances_data:
+                if instance.get('name') == vm_name:
+                    selected_vm = instance
+                    break
+            
+            if not selected_vm:
+                print(f'\nError: VM instance "{vm_name}" not found.')
+                input('\nPress enter to try again: ')
+                compute_ssh_key_management()
+                return
+            
+            # Extract zone from the selected VM
+            vm_zone = selected_vm.get('zone', '').split('/')[-1]  # Extract zone name from full path
+            if not vm_zone:
+                print(f'\nError: Could not determine zone for VM instance "{vm_name}".')
+                input('\nPress enter to try again: ')
+                compute_ssh_key_management()
+                return
+            
+            # Check if SSH key exists
+            ssh_key_path = os.path.expanduser('~/.ssh/google_compute_engine.pub')
+            if not os.path.exists(ssh_key_path):
+                print(f'\nSSH public key not found at {ssh_key_path}')
+                generate_key = input('Would you like to generate a new SSH key pair? (y/n): ')
+                
+                if generate_key.lower() == 'y':
+                    print('\nGenerating SSH key pair...')
+                    key_result = subprocess.run(['ssh-keygen', '-t', 'rsa', '-f', 
+                                               os.path.expanduser('~/.ssh/google_compute_engine'), 
+                                               '-C', 'gus', '-N', ''], 
+                                              capture_output=True, text=True)
+                    if key_result.returncode == 0:
+                        print('SSH key pair generated successfully.')
+                    else:
+                        print(f'Error generating SSH key: {key_result.stderr}')
+                        input('\nPress enter to get back to the compute engine menu: ')
+                        compute_engine_module()
+                        return
+                else:
+                    print('\nSSH key generation cancelled.')
+                    input('\nPress enter to get back to the compute engine menu: ')
+                    compute_engine_module()
+                    return
+            
+            # Read the public key
+            try:
+                with open(ssh_key_path, 'r') as key_file:
+                    public_key = key_file.read().strip()
+                print(f'\nSSH public key found: {ssh_key_path}')
+                print(f'Key preview: {public_key[:50]}...')
+            except Exception as e:
+                print(f'\nError reading SSH key: {e}')
+                input('\nPress enter to get back to the compute engine menu: ')
+                compute_engine_module()
+                return
+            
+            # Confirm SSH key addition
+            print(f'\nReady to add SSH key to VM instance: {vm_name}')
+            confirm = input('Do you want to proceed? (y/n): ')
+            
+            if confirm.lower() != 'y':
+                print('\nSSH key addition cancelled.')
+                input('\nPress enter to get back to the compute engine menu: ')
+                compute_engine_module()
+                return
+            
+            # Add SSH key to VM metadata
+            print(f'\nAdding SSH key to VM instance {vm_name} in zone {vm_zone}...')
+            ssh_metadata = f'gus:{public_key}'
+            
+            metadata_result = subprocess.run([
+                'gcloud', 'compute', 'instances', 'add-metadata', vm_name,
+                '--zone', vm_zone,
+                '--metadata', f'ssh-keys={ssh_metadata}'
+            ], capture_output=True, text=True)
+            
+            if metadata_result.returncode == 0:
+                print(f'SSH key successfully added to VM instance: {vm_name}')
+                print('\nYou can now connect to the VM using:')
+                print(f'  gcloud compute ssh gus@{vm_name} --zone={vm_zone}')
+                external_ip = 'N/A'
+                network_interfaces = selected_vm.get('networkInterfaces', [])
+                if network_interfaces:
+                    access_configs = network_interfaces[0].get('accessConfigs', [])
+                    if access_configs:
+                        external_ip = access_configs[0].get('natIP', 'N/A')
+                if external_ip != 'N/A':
+                    print(f'  ssh -i ~/.ssh/google_compute_engine gus@{external_ip}')
+                else:
+                    print('  ssh -i ~/.ssh/google_compute_engine gus@<EXTERNAL_IP> (no external IP found)')
+            else:
+                print(f'Error adding SSH key: {metadata_result.stderr}')
+            
+            # Log the operation
+            now = datetime.now()
+            with open(gcp_system_log_file, 'a') as logfile:
+                logfile.write(str(now) + f" - Executed SSH key addition for VM: {vm_name}\n")
+                logfile.close()
+                
+        except subprocess.CalledProcessError as e:
+            print(f'Error fetching VM instances: {e.stderr}')
+        except json.JSONDecodeError as e:
+            print(f'Error parsing VM instance data: {e}')
+        except Exception as e:
+            print(f'Unexpected error: {e}')
+        
+        input('\nPress enter to get back to the compute engine menu: ')
+        now = datetime.now()
+        with open(gcp_system_log_file, 'a') as logfile:
+            logfile.write(str(now) + " <-- Exited SSH KEY MANAGEMENT mode\n")
+            logfile.close()
+        compute_engine_module()
+
     print("*******************************************")
     print('          COMPUTE ENGINE MODULE           \n')
     print('1 - List zones')
@@ -1207,13 +1431,14 @@ def compute_engine_module():
     print('9 - Find vm by image name')
     print('10 - List images')
     print('11 - SSH into vm only with vm name - simple mode')
-    print('12 - Create default VM instance/s - To create more than one separate strings by space')
-    print('13 - Delete vm instance/s - To delete more than one separate strings by space' )
-    print('14 - Create an instance template')
-    print('15 - Delete an instance template')
-    print('16 - Find an instance template')
-    print('17 - List instance templates')
-    print('18 - Describe an instance template')
+    print('12 - SSH Key Management - List VMs and add SSH keys for authentication')
+    print('13 - Create default VM instance/s - To create more than one separate strings by space')
+    print('14 - Delete vm instance/s - To delete more than one separate strings by space' )
+    print('15 - Create an instance template')
+    print('16 - Delete an instance template')
+    print('17 - Find an instance template')
+    print('18 - List instance templates')
+    print('19 - Describe an instance template')
     print('o - Operations menu - Lists and describes operations executed by users')
     print('a - > Advanced mode - requires more advanced knowledge')
     print('b - < Back to main menu')
@@ -1242,18 +1467,20 @@ def compute_engine_module():
     if compute_selection == '11':
         compute_ssh_vm_simple()
     if compute_selection == '12':
-        compute_create_vm_instance()
+        compute_ssh_key_management()
     if compute_selection == '13':
-        compute_delete_vm_instance()
+        compute_create_vm_instance()
     if compute_selection == '14':
-        compute_create_instance_template()
+        compute_delete_vm_instance()
     if compute_selection == '15':
-        compute_delete_instance_template()
+        compute_create_instance_template()
     if compute_selection == '16':
-        compute_find_instance_template()
+        compute_delete_instance_template()
     if compute_selection == '17':
-        compute_list_instance_template()
+        compute_find_instance_template()
     if compute_selection == '18':
+        compute_list_instance_template()
+    if compute_selection == '19':
         compute_describe_instance_template()
     if compute_selection == 'o':
         compute_operations_list_describe()
