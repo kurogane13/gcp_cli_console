@@ -8,6 +8,123 @@ import json
 
 now=datetime.now()
 
+def validate_gcloud_authentication():
+    """Validate if user is authenticated with gcloud and has active project"""
+    try:
+        print("🔍 Validating gcloud authentication...")
+        
+        # Check if user is logged in
+        auth_check_cmd = "gcloud auth list --filter=status:ACTIVE --format='value(account)'"
+        print(f"📋 Checking authentication: {auth_check_cmd}")
+        
+        result = subprocess.run(auth_check_cmd, shell=True, capture_output=True, text=True)
+        
+        if result.returncode != 0 or not result.stdout.strip():
+            print("❌ No active gcloud authentication found!")
+            return False, None, None
+            
+        active_account = result.stdout.strip()
+        print(f"✅ Active account: {active_account}")
+        
+        # Check active project
+        project_check_cmd = "gcloud config get-value project"
+        print(f"📋 Checking active project: {project_check_cmd}")
+        
+        result = subprocess.run(project_check_cmd, shell=True, capture_output=True, text=True)
+        
+        if result.returncode != 0:
+            print("⚠️ No active project set!")
+            return True, active_account, None
+            
+        active_project = result.stdout.strip()
+        if active_project and active_project != "(unset)":
+            # ADDITIONAL CHECK: Test if authentication actually works with a resource access command
+            print("🔍 Testing authentication with actual GCP resource access...")
+            test_cmd = f"gcloud projects describe {active_project} --format='value(projectId)' --quiet"
+            test_result = subprocess.run(test_cmd, shell=True, capture_output=True, text=True)
+            
+            if test_result.returncode != 0:
+                # Authentication validation failed - tokens might be expired
+                print("❌ Authentication test failed - tokens may be expired!")
+                print("🔍 Error details:")
+                print(f"   {test_result.stderr.strip()}")
+                if "refresh token has expired" in test_result.stderr.lower() or "invalid_grant" in test_result.stderr.lower():
+                    print("🚨 REFRESH TOKEN EXPIRED - Re-authentication required!")
+                return False, None, None
+            else:
+                print("✅ Authentication test passed!")
+                print(f"✅ Active project: {active_project}")
+                return True, active_account, active_project
+        else:
+            print("⚠️ No active project set!")
+            return True, active_account, None
+            
+    except Exception as e:
+        print(f"❌ Error checking authentication: {str(e)}")
+        return False, None, None
+
+def prompt_authentication():
+    """Prompt user to authenticate when not logged in"""
+    print("\n" + "=" * 70)
+    print("🔐 AUTHENTICATION REQUIRED")
+    print("=" * 70)
+    print("You need to authenticate with gcloud before running commands.")
+    print("\nOptions:")
+    print("1. Go to Main Menu → option 'l' (Login/Authentication)")
+    print("2. Then use:")
+    print("   - option 'l' (Login to gcloud)")  
+    print("   - option 'c' (Set active project)")
+    print("\n" + "=" * 70)
+    
+    choice = input("Would you like to go to the authentication menu now? (y/n): ").strip().lower()
+    
+    if choice == 'y':
+        return True
+    else:
+        print("⚠️ Operation cancelled. Please authenticate before running gcloud commands.")
+        return False
+
+def execute_gcloud_command_with_auth_check(command, description=""):
+    """Execute gcloud command after validating authentication"""
+    print(f"🔧 {description}")
+    
+    # Validate authentication first
+    is_authenticated, account, project = validate_gcloud_authentication()
+    
+    if not is_authenticated:
+        print("❌ Authentication validation failed!")
+        print("🚫 Command execution cancelled - authentication required")
+        print("💡 Please authenticate using Main Menu → 'l' (Login/Authentication)")
+        return 1  # Return error code without executing command
+    
+    print(f"✅ Authentication validated - Account: {account}")
+    if project:
+        print(f"✅ Active project: {project}")
+    else:
+        print("⚠️ Warning: No active project set. Some commands may fail.")
+        print("💡 Consider setting a project using Main Menu → '5' (Set a project)")
+        
+        continue_anyway = input("Continue without active project? (y/n): ").strip().lower()
+        if continue_anyway != 'y':
+            print("🚫 Command execution cancelled by user")
+            return 1
+    
+    # Execute the command if authentication is valid
+    print(f"📋 Executing command: {command}")
+    print("=" * 80)
+    result = os.system(command)
+    print("=" * 80)
+    return result
+
+def execute_gcloud_command(command, description=""):
+    """Execute gcloud command and display it to the user"""
+    print(f"🔧 {description}")
+    print(f"📋 Executing command: {command}")
+    print("=" * 80)
+    result = os.system(command)
+    print("=" * 80)
+    return result
+
 def test_case_module_menu():
     from gcp_test_case_cli import test_case_module
     test_case_module()
@@ -29,7 +146,8 @@ def check_billing_project():
     print('- Mode 1 accessed.\n')
     project_name=input('Provide a valid project name and press enter: ')
     print("\nRetrieving billing data for project name: "+project_name+'\n')
-    os.system('gcloud beta billing projects describe '+project_name)
+    execute_gcloud_command_with_auth_check(f'gcloud beta billing projects describe {project_name}', 
+                          f"Retrieving billing data for project: {project_name}")
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " - Executed command: gcloud beta billing projects describe " +project_name+ "\n")
         logfile.close()
@@ -47,7 +165,8 @@ def describe_specific_project():
         logfile.close()
     print('- Mode 2 Accessed\n')
     project_to_describe=input('Type a project name to describe it: ')
-    os.system('gcloud projects describe '+project_to_describe)
+    execute_gcloud_command_with_auth_check(f'gcloud projects describe {project_to_describe}', 
+                          f"Describing project: {project_to_describe}")
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " - Executed command: gcloud projects describe "+project_to_describe+"\n")
@@ -66,7 +185,8 @@ def get_cconfigurations_list():
         logfile.close()
     print('- Mode 3 Accessed\n')
     print('Getting configuration list...\n')
-    os.system('gcloud config configurations list')
+    execute_gcloud_command_with_auth_check('gcloud config configurations list', 
+                          "Listing all gcloud configuration profiles")
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " - Executed command: gcloud config configurations list\n")
@@ -85,7 +205,8 @@ def get_active_project():
         logfile.close()
     print('- Mode 4 accessed.\n')
     print('Active project is: \n')
-    os.system('gcloud config get-value project')
+    execute_gcloud_command_with_auth_check('gcloud config get-value project', 
+                          "Getting current active project")
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " - Executed command: gcloud config get-value project"+"\n")
@@ -101,11 +222,12 @@ def set_project():
     print('- Mode 5 accessed.\n')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
-        logfile.write(str(now) + " --> Accessed LIST ALL PROJECTS mode\n")
+        logfile.write(str(now) + " --> Accessed SET PROJECT mode\n")
         logfile.close()
     project_name=input('Provide a valid project name to set up, and press enter: ')
     print("\nSetting up project: "+project_name+'\n')
-    os.system('gcloud config set project '+project_name)
+    print(f"🔧 Setting active project to: {project_name}")
+    os.system(f'gcloud config set project {project_name}')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " - Executed command: gcloud config set project "+project_name+"\n")
@@ -113,7 +235,7 @@ def set_project():
     input('\nOperation executed. Press enter to get back to main menu: ')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
-        logfile.write(str(now) + " <-- Exited LIST ALL PROJECTS mode\n")
+        logfile.write(str(now) + " <-- Exited SET PROJECT mode\n")
         logfile.close()
     main_menu()
 
@@ -124,7 +246,8 @@ def get_all_projects():
         logfile.write(str(now) + " --> Accessed LIST ALL PROJECTS mode\n")
         logfile.close()
     print('Listing all projects....\n')
-    os.system('gcloud projects list')
+    execute_gcloud_command_with_auth_check('gcloud projects list', 
+                          "Listing all projects in your account")
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " - Executed command: gcloud projects list\n")
@@ -143,7 +266,8 @@ def get_all_organizations():
         logfile.close()
     print('- Mode 7 accessed.\n')
     print('Listing all organizations....\n')
-    os.system('gcloud organizations list')
+    execute_gcloud_command_with_auth_check('gcloud organizations list', 
+                          "Listing all organizations in your account")
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " - Executed command: gcloud organizations list\n")
@@ -163,7 +287,8 @@ def alpha_interactive_cli():
     print('Mode A accessed.\n')
     print("You have accessed the alpha gcloud cli interactive mode. Once inside the console, to exit, type exit and enter.")
     input("\nPress enter to access the interactive console now:  ")
-    os.system('gcloud alpha interactive')
+    execute_gcloud_command_with_auth_check('gcloud alpha interactive', 
+                          "Starting gcloud interactive mode")
     input('\nPress enter to get back to the main menu: ')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
@@ -204,9 +329,11 @@ def login_account():
                 proceed_to_login()
             if os.path.isfile(EXISTING_LOGIN_CONFIG_FILE):
                 print("\nFile " + EXISTING_LOGIN_CONFIG_FILE + " was found...")
-                os.system('\n' + gcloud_auth_login_var + EXISTING_LOGIN_CONFIG_FILE)
+                print(f"🔧 Logging in with config file: {EXISTING_LOGIN_CONFIG_FILE}")
+                os.system(f'{gcloud_auth_login_var}{EXISTING_LOGIN_CONFIG_FILE}')
                 print("\nShowing active account: ")
-                os.system('\ngcloud config list account --format "value(core.account)"')
+                print("🔧 Getting current active account")
+                os.system('gcloud config list account --format "value(core.account)"')
                 input('\nPress enter to proceed to the main menu: ')
                 account_types()
             else:
@@ -240,7 +367,8 @@ def login_account():
 
         def gcloud_auth():
             input('\nPress enter to run gcloud auth login: ')
-            gcloud_auth = '\ngcloud auth login'
+            gcloud_auth = 'gcloud auth login'
+            print("🔧 Initiating Google Cloud authentication")
             os.system(gcloud_auth)
             input('\nPress enter to proceed to the main menu: ')
             account_types()
@@ -258,7 +386,8 @@ def login_account():
         selection=input('\nType an option from the menu and press enter: ')
         if selection == "i":
             input('\nPress enter to init gcloud now: ')
-            gcloud_init = '\ngcloud init'
+            gcloud_init = 'gcloud init'
+            print("🔧 Initializing Google Cloud configuration")
             os.system(gcloud_init)
             input('\nPress enter to proceed to the main menu: ')
             account_types()
@@ -269,17 +398,20 @@ def login_account():
         if selection  == 'a':
             input('\nPress enter to view the current active account: ')
             print('\nThe current logged in set account is: \n')
+            print("🔧 Getting current active account")
             os.system('gcloud config list account --format "value(core.account)"')
             input('\nPress enter to get back to the main menu: ')
             account_types()
         if selection == 'g':
             account = input("\nPlease provide the name of the GOOGLE account you want to login with: ")
-            os.system('gcloud auth login ' + account)
+            print(f"🔧 Logging in with Google account: {account}")
+            os.system(f'gcloud auth login {account}')
             input('\nPress enter to get back to the main menu: ')
             account_types()
         if selection == 's':
             set_active_account=input("Provide the name of the account you want to set: ")
-            os.system('gcloud config set account '+set_active_account)
+            print(f"🔧 Setting active account to: {set_active_account}")
+            os.system(f'gcloud config set account {set_active_account}')
             input('\nPress enter to get back to the main menu: ')
             account_types()
         if selection ==  'l':
@@ -308,7 +440,8 @@ def compute_engine_module():
             logfile.close()
         print("\nCompute show region mode accessed.\n")
         print('Showing current region...  \n')
-        os.system('gcloud config list compute/region')
+        execute_gcloud_command_with_auth_check('gcloud config list compute/region', 
+                              "Showing current compute region")
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(str(now) + " - Executed command: gcloud config list compute/region\n")
@@ -327,7 +460,8 @@ def compute_engine_module():
             logfile.close()
         print('\nRegion set mode accesed.\n')
         region_set = input('Provide the name of the region to set/change: ')
-        os.system('gcloud compute set compute/region ' + region_set)
+        execute_gcloud_command_with_auth_check(f'gcloud config set compute/region {region_set}', 
+                              f"Setting compute region to: {region_set}")
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(
@@ -347,7 +481,8 @@ def compute_engine_module():
             logfile.close()
         print("\nCompute list regions mode accessed.\n")
         print('Listing compute regions...  \n')
-        os.system('gcloud compute regions list')
+        execute_gcloud_command_with_auth_check('gcloud compute regions list', 
+                              "Listing all available compute regions")
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(str(now) + " - Executed command: gcloud compute zones list\n")
@@ -366,7 +501,7 @@ def compute_engine_module():
             logfile.close()
         print("\nCompute zones mode accessed.\n")
         print('Listing compute zones...  \n')
-        os.system('gcloud compute zones list')
+        execute_gcloud_command_with_auth_check('gcloud compute zones list', "Listing all available compute zones")
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(str(now) + " - Executed command: gcloud compute zones list\n")
@@ -386,7 +521,8 @@ def compute_engine_module():
         print("\nCompute zones describe mode accessed.\n")
         describe_zone=input('Provide a valid zone to describe:  ')
         box_format = ' --format "[box]"'
-        os.system('\ngcloud compute zones describe '+describe_zone+box_format)
+        execute_gcloud_command_with_auth_check(f'gcloud compute zones describe {describe_zone}{box_format}', 
+                              f"Describing compute zone: {describe_zone}")
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(str(now) + " - Executed command: gcloud compute zones describe "+describe_zone+box_format+"\n")
@@ -404,7 +540,8 @@ def compute_engine_module():
             logfile.write(str(now) + " --> Accessed COMPUTE LIST RUNNING OS INSTANCES mode\n")
             logfile.close()
         print("\nList running os instances mode accessed.\n")
-        os.system('\ngcloud compute instances os-inventory list-instances')
+        execute_gcloud_command_with_auth_check('gcloud compute instances os-inventory list-instances', 
+                              "Listing running OS instances")
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(str(now) + " - Executed command: gcloud compute instances os-inventory list-instances\n")
@@ -423,7 +560,8 @@ def compute_engine_module():
             logfile.close()
         print("\nDescribe running vm os instance mode accessed.\n")
         describe_running_os=input('Provide a valid vm name to describe the os instance: ')
-        os.system('\ngcloud compute instances os-inventory describe '+describe_running_os)
+        execute_gcloud_command_with_auth_check(f'gcloud compute instances os-inventory describe {describe_running_os}', 
+                              f"Describing OS inventory for VM: {describe_running_os}")
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(str(now) + " - Executed command: gcloud compute instances os-inventory describe "+describe_running_os+"\n")
@@ -463,7 +601,8 @@ def compute_engine_module():
             logfile.write(str(now) + " --> Accessed COMPUTE LIST IMAGES mode\n")
             logfile.close()
         print('Listing compute images...  \n')
-        os.system('gcloud compute images list')
+        execute_gcloud_command_with_auth_check('gcloud compute images list', 
+                              "Listing all available compute images")
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(
@@ -556,8 +695,9 @@ def compute_engine_module():
         
         vm_name = input("Provide the VM instance name to connect to: ")
         print("\nAttempting to connect to vm instance...")
-        ssh_vm_instance_simple='gcloud compute ssh '+vm_name
-        os.system(ssh_vm_instance_simple)
+        ssh_vm_instance_simple=f'gcloud compute ssh {vm_name}'
+        execute_gcloud_command_with_auth_check(ssh_vm_instance_simple, 
+                              f"Connecting via SSH to VM: {vm_name}")
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(
@@ -579,7 +719,8 @@ def compute_engine_module():
         vm_instance_name=input('Provide the name/s of the vm instance/s to create: ')
         default_zone=' --zone=northamerica-northeast1-a'
         print('\nAttempting to create vm instances: '+ vm_instance_name + "...")
-        os.system('gcloud compute instances create '+vm_instance_name+default_zone)
+        execute_gcloud_command_with_auth_check(f'gcloud compute instances create {vm_instance_name}{default_zone}', 
+                              f"Creating VM instance: {vm_instance_name}")
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(str(now) + " - Executed command: gcloud compute instances create "+vm_instance_name+default_zone+"\n")
@@ -600,7 +741,8 @@ def compute_engine_module():
         vm_instance_name=input('Provide the name/s of the vm instance/s to delete: ')
         delete_quiet=' --zone=northamerica-northeast1-a --quiet'
         print('\nAttempting to delete vm instances: '+vm_instance_name+"...")
-        os.system('gcloud compute instances delete '+vm_instance_name+delete_quiet)
+        execute_gcloud_command_with_auth_check(f'gcloud compute instances delete {vm_instance_name}{delete_quiet}', 
+                              f"Deleting VM instance: {vm_instance_name}")
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(str(now) + " - Executed command: gcloud compute instances delete " + vm_instance_name + delete_quiet + "\n")
@@ -619,7 +761,8 @@ def compute_engine_module():
             logfile.close()
         print('\nInstance template creation mode accesed.\n')
         instance_template_name_create = input('Provide the name of the instance template to create: ')
-        os.system('gcloud compute instance-templates create '+instance_template_name_create)
+        execute_gcloud_command_with_auth_check(f'gcloud compute instance-templates create {instance_template_name_create}', 
+                              f"Creating instance template: {instance_template_name_create}")
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(
@@ -639,7 +782,8 @@ def compute_engine_module():
             logfile.close()
         print('\nInstance template deletion mode accesed.\n')
         instance_template_name_delete = input('Provide the name of the instance template to delete: ')
-        os.system('gcloud compute instance-templates delete '+instance_template_name_delete)
+        execute_gcloud_command_with_auth_check(f'gcloud compute instance-templates delete {instance_template_name_delete}', 
+                              f"Deleting instance template: {instance_template_name_delete}")
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(
@@ -659,7 +803,8 @@ def compute_engine_module():
             logfile.close()
         print('\nInstance template listing mode accesed.\n')
         print('Listing instance templates...  \n')
-        os.system('gcloud compute instance-templates list')
+        execute_gcloud_command_with_auth_check('gcloud compute instance-templates list', 
+                              "Listing all instance templates")
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(
@@ -680,7 +825,8 @@ def compute_engine_module():
         print('\nInstance template finding mode accesed.\n')
         instance_template_find_name = input('Provide the name of the instance template to find: ')
         quote='"'
-        os.system('gcloud compute instance-templates list --filter="name='+instance_template_find_name+quote+' --format "[box]"')
+        execute_gcloud_command_with_auth_check(f'gcloud compute instance-templates list --filter="name={instance_template_find_name}{quote} --format "[box]"', 
+                              f"Finding instance template: {instance_template_find_name}")
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(str(now) + " - Executed command: gcloud compute images list " + '--filter="name=' + instance_template_find_name + quote + box_format + "\n")
@@ -699,7 +845,8 @@ def compute_engine_module():
             logfile.close()
         print('\nInstance template description mode accesed.\n')
         instance_template_describe_name = input('Provide the name of the instance template to describe: ')
-        os.system('gcloud compute instance-templates describe '+instance_template_describe_name)
+        execute_gcloud_command_with_auth_check(f'gcloud compute instance-templates describe {instance_template_describe_name}', 
+                              f"Describing instance template: {instance_template_describe_name}")
         now = datetime.now()
         with open(gcp_system_log_file, 'a') as logfile:
             logfile.write(str(now) + " - Executed command: gcloud -templates describe "+instance_template_describe_name+"\n")
@@ -725,7 +872,8 @@ def compute_engine_module():
                 logfile.close()
             list_operation_name = input('\nProvide the name of the user, to list all of the executed operations in compute: ')
             quotes='"'
-            os.system('gcloud compute operations list --filter="user='+list_operation_name+quotes+' --format=json')
+            execute_gcloud_command_with_auth_check(f'gcloud compute operations list --filter="user={list_operation_name}{quotes} --format=json', 
+                                  f"Listing operations for user: {list_operation_name}")
             with open(gcp_system_log_file, 'a') as logfile:
                 logfile.write(str(now) + ' - Executed command: gcloud compute operations list --filter='+"user="+list_operation_name+quotes+' --format=json'+"\n")
                 logfile.close()
@@ -735,8 +883,9 @@ def compute_engine_module():
             operations_dir="compute_operations_logs"
             with open(operations_dir+"/"+query_api_log, 'a') as logfile:
                 try:
-                    logfile.write(os.system('gcloud compute operations list --filter="user=' + list_operation_name + quotes + ' --format=json | tee -a '+operations_dir+"/"+query_api_log))
                     logfile.close()
+                    execute_gcloud_command_with_auth_check(f'gcloud compute operations list --filter="user={list_operation_name}{quotes} --format=json | tee -a {operations_dir}/{query_api_log}', 
+                                          f"Listing operations for user {list_operation_name} (JSON format)")
                     print("\nGenerated log file: "+operations_dir+"/"+query_api_log+" which you can view and query from the compute operations menu")
                     input('\nPress enter to get back to the compute operations menu: ')
                     now = datetime.now()
@@ -768,7 +917,8 @@ def compute_engine_module():
                 logfile.close()
             list_operation_name = input('\nProvide the name of the user, to list all of the executed operations in compute: ')
             quotes='"'
-            os.system('gcloud compute operations list --filter="user='+list_operation_name+quotes)
+            execute_gcloud_command_with_auth_check(f'gcloud compute operations list --filter="user={list_operation_name}{quotes}', 
+                                  f"Listing operations for user: {list_operation_name}")
             with open(gcp_system_log_file, 'a') as logfile:
                 logfile.write(str(now) + ' - Executed command: gcloud compute operations list --filter='+"user="+list_operation_name+quotes+"\n")
                 logfile.close()
@@ -778,8 +928,9 @@ def compute_engine_module():
             operations_dir = "compute_operations_logs"
             with open(operations_dir+"/"+query_api_log, 'a') as logfile:
                 try:
-                    logfile.write(os.system('gcloud compute operations list --filter="user=' + list_operation_name + quotes + ' | tee -a ' + operations_dir+"/"+query_api_log))
                     logfile.close()
+                    execute_gcloud_command_with_auth_check(f'gcloud compute operations list --filter="user={list_operation_name}{quotes} | tee -a {operations_dir}/{query_api_log}', 
+                                          f"Listing operations for user {list_operation_name} (text format)")
                     print("\nGenerated log file: " +query_api_log + " which you can view and query from the compute operations menu")
                     input('\nPress enter to get back to the compute operations menu: ')
                     now = datetime.now()
@@ -811,7 +962,8 @@ def compute_engine_module():
                 logfile.close()
             describe_operation_name = input('\nProvide the name of the operation to describe: ')
             quotes = '"'
-            os.system('gcloud compute operations describe '+describe_operation_name)
+            execute_gcloud_command_with_auth_check(f'gcloud compute operations describe {describe_operation_name}', 
+                                  f"Describing operation: {describe_operation_name}")
             with open(gcp_system_log_file, 'a') as logfile:
                 logfile.write(str(now) + ' - Executed command: gcloud compute operations describe '+describe_operation_name+"\n")
                 logfile.close()
@@ -1195,7 +1347,8 @@ def compute_engine_module():
                                         confirm_correct_provided_data=input('\nDo you confirm all the provided data is correct?: ')
                                         if confirm_correct_provided_data == 'y':
                                             print('Attemping to create the vm with the provided data...\n')
-                                            os.system('gcloud compute instances create '+vm_name+' --image-family='+image_family+' --image-project='+image_project+' --machine-type='+machine_type+'-custom-'+cpus_amount+'-'+ram_amount)
+                                            execute_gcloud_command_with_auth_check(f'gcloud compute instances create {vm_name} --image-family={image_family} --image-project={image_project} --machine-type={machine_type}-custom-{cpus_amount}-{ram_amount}', 
+                                                                  f"Creating custom VM: {vm_name}")
                                             now = datetime.now()
                                             with open(gcp_system_log_file, 'a') as logfile:
                                                 logfile.write(str(now) + " - Executed command: gcloud compute instances create "+vm_name+' --image-family='+image_family+' --image-project='+image_project+' --machine-type='+machine_type+'-custom-'+cpus_amount+'-'+ram_amount+"\n")
@@ -1498,7 +1651,8 @@ def update_gcloud():
         logfile.write(str(now)+" --> Accessed UPDATE GCLOUD menu\n")
         logfile.close()
     print('Mode U accesed. gcloud cli update\n')
-    os.system('gcloud components update')
+    execute_gcloud_command_with_auth_check('gcloud components update', 
+                          "Updating gcloud CLI components")
     input('\nPress enter to get back to the main menu: ')
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
@@ -1507,6 +1661,520 @@ def update_gcloud():
     now = datetime.now()
     with open(gcp_system_log_file, 'a') as logfile:
         logfile.write(str(now) + " <-- Exited UPDATE GCLOUD menu\n")
+        logfile.close()
+    main_menu()
+
+def show_all_gcloud_commands():
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Accessed GCLOUD COMMANDS REFERENCE mode\n")
+        logfile.close()
+    
+    print('=' * 80)
+    print('                    GCLOUD COMMANDS REFERENCE')
+    print('=' * 80)
+    print()
+    
+    # Define all commands used in the program organized by sections
+    commands_sections = {
+        "PROJECT MANAGEMENT": [
+            {
+                "command": "gcloud beta billing projects describe [PROJECT_NAME]",
+                "description": "Retrieve billing data for a specific project",
+                "example": "gcloud beta billing projects describe my-project-123",
+                "usage": "Use this to check billing account association and status for a project"
+            },
+            {
+                "command": "gcloud projects describe [PROJECT_ID]",
+                "description": "Get detailed information about a specific project",
+                "example": "gcloud projects describe my-project-123",
+                "usage": "Shows project metadata, creation time, labels, and lifecycle state"
+            },
+            {
+                "command": "gcloud projects list",
+                "description": "List all projects in your Google Cloud account",
+                "example": "gcloud projects list",
+                "usage": "View all accessible projects with their IDs, names, and numbers"
+            },
+            {
+                "command": "gcloud config get-value project",
+                "description": "Get the currently active project",
+                "example": "gcloud config get-value project",
+                "usage": "Returns the project ID that gcloud commands will target by default"
+            },
+            {
+                "command": "gcloud config set project [PROJECT_ID]",
+                "description": "Set the active project for gcloud commands",
+                "example": "gcloud config set project my-project-123",
+                "usage": "Changes the default project for all subsequent gcloud operations"
+            }
+        ],
+        
+        "AUTHENTICATION & CONFIGURATION": [
+            {
+                "command": "gcloud auth login",
+                "description": "Authenticate with Google Cloud using browser-based login",
+                "example": "gcloud auth login",
+                "usage": "Opens browser to authenticate with your Google account"
+            },
+            {
+                "command": "gcloud auth login [ACCOUNT]",
+                "description": "Login with a specific Google account",
+                "example": "gcloud auth login user@example.com",
+                "usage": "Authenticate using a specific Google account email"
+            },
+            {
+                "command": "gcloud auth login --login-config=[CONFIG_FILE]",
+                "description": "Login using a workforce pool configuration file",
+                "example": "gcloud auth login --login-config=login.json",
+                "usage": "Corporate/enterprise login using workforce identity federation"
+            },
+            {
+                "command": "gcloud config configurations list",
+                "description": "List all gcloud configuration profiles",
+                "example": "gcloud config configurations list",
+                "usage": "Shows all configured profiles with account and project settings"
+            },
+            {
+                "command": "gcloud config list account --format \"value(core.account)\"",
+                "description": "Get the currently active account",
+                "example": "gcloud config list account --format \"value(core.account)\"",
+                "usage": "Returns just the email of the currently authenticated account"
+            },
+            {
+                "command": "gcloud config set account [ACCOUNT]",
+                "description": "Set the active account for gcloud commands",
+                "example": "gcloud config set account user@example.com",
+                "usage": "Switch between multiple authenticated accounts"
+            },
+            {
+                "command": "gcloud init",
+                "description": "Initialize gcloud configuration with guided setup",
+                "example": "gcloud init",
+                "usage": "Interactive setup for authentication, project, and region selection"
+            }
+        ],
+        
+        "COMPUTE ENGINE - REGIONS & ZONES": [
+            {
+                "command": "gcloud compute regions list",
+                "description": "List all available compute regions",
+                "example": "gcloud compute regions list",
+                "usage": "Shows all Google Cloud regions with their quotas and status"
+            },
+            {
+                "command": "gcloud compute zones list",
+                "description": "List all available compute zones",
+                "example": "gcloud compute zones list",
+                "usage": "Shows all zones within regions, their status, and maintenance windows"
+            },
+            {
+                "command": "gcloud config list compute/region",
+                "description": "Show the currently configured compute region",
+                "example": "gcloud config list compute/region",
+                "usage": "Display the default region for compute operations"
+            },
+            {
+                "command": "gcloud config set compute/region [REGION]",
+                "description": "Set the default compute region",
+                "example": "gcloud config set compute/region us-central1",
+                "usage": "Configure default region for compute instances and resources"
+            },
+            {
+                "command": "gcloud compute zones describe [ZONE] --format \"[box]\"",
+                "description": "Get detailed information about a specific zone",
+                "example": "gcloud compute zones describe us-central1-a --format \"[box]\"",
+                "usage": "Shows zone status, available machine types, and maintenance info"
+            }
+        ],
+        
+        "COMPUTE ENGINE - INSTANCES": [
+            {
+                "command": "gcloud compute instances list",
+                "description": "List all VM instances in the project",
+                "example": "gcloud compute instances list",
+                "usage": "Shows all VMs with names, zones, machine types, and status"
+            },
+            {
+                "command": "gcloud compute instances list --filter=\"name=[VM_NAME]\" --format \"[box]\"",
+                "description": "Find a specific VM instance by name",
+                "example": "gcloud compute instances list --filter=\"name=my-vm\" --format \"[box]\"",
+                "usage": "Search for VMs matching a specific name pattern"
+            },
+            {
+                "command": "gcloud compute instances create [INSTANCE_NAME] --zone=[ZONE]",
+                "description": "Create a new VM instance with default settings",
+                "example": "gcloud compute instances create my-vm --zone=northamerica-northeast1-a",
+                "usage": "Creates a standard VM with default machine type and boot disk"
+            },
+            {
+                "command": "gcloud compute instances create [NAME] --image-family=[FAMILY] --image-project=[PROJECT] --machine-type=[TYPE]-custom-[CPUS]-[RAM]",
+                "description": "Create a custom VM instance with specific configuration",
+                "example": "gcloud compute instances create my-vm --image-family=ubuntu-2004-lts --image-project=ubuntu-os-cloud --machine-type=n1-custom-4-8192",
+                "usage": "Create VM with custom CPU, RAM, and OS image specifications"
+            },
+            {
+                "command": "gcloud compute instances delete [INSTANCE_NAME] --zone=[ZONE] --quiet",
+                "description": "Delete VM instances without confirmation prompt",
+                "example": "gcloud compute instances delete my-vm --zone=northamerica-northeast1-a --quiet",
+                "usage": "Permanently removes VM instances and their boot disks"
+            },
+            {
+                "command": "gcloud compute ssh [INSTANCE_NAME]",
+                "description": "SSH into a VM instance (simple mode)",
+                "example": "gcloud compute ssh my-vm",
+                "usage": "Connect to VM using gcloud's built-in SSH with key management"
+            },
+            {
+                "command": "gcloud compute ssh [USER]@[INSTANCE] --zone [ZONE] --project [PROJECT]",
+                "description": "SSH with advanced parameters",
+                "example": "gcloud compute ssh john@my-vm --zone us-central1-a --project my-project",
+                "usage": "Connect to VM with specific user, zone, and project parameters"
+            },
+            {
+                "command": "gcloud compute instances os-inventory list-instances",
+                "description": "List running VM instances with OS inventory",
+                "example": "gcloud compute instances os-inventory list-instances",
+                "usage": "Shows VMs with detailed OS and software inventory information"
+            },
+            {
+                "command": "gcloud compute instances os-inventory describe [INSTANCE]",
+                "description": "Get detailed OS inventory for a specific VM",
+                "example": "gcloud compute instances os-inventory describe my-vm",
+                "usage": "Shows installed packages, OS version, and system details"
+            }
+        ],
+        
+        "COMPUTE ENGINE - IMAGES & TEMPLATES": [
+            {
+                "command": "gcloud compute images list",
+                "description": "List all available compute images",
+                "example": "gcloud compute images list",
+                "usage": "Shows public and custom images available for VM creation"
+            },
+            {
+                "command": "gcloud compute images list --filter=\"name=[IMAGE_NAME]\" --format \"[box]\"",
+                "description": "Find specific compute images by name",
+                "example": "gcloud compute images list --filter=\"name=ubuntu\" --format \"[box]\"",
+                "usage": "Search for images matching a specific name pattern"
+            },
+            {
+                "command": "gcloud compute instance-templates create [TEMPLATE_NAME]",
+                "description": "Create an instance template",
+                "example": "gcloud compute instance-templates create my-template",
+                "usage": "Define reusable VM configuration for managed instance groups"
+            },
+            {
+                "command": "gcloud compute instance-templates delete [TEMPLATE_NAME]",
+                "description": "Delete an instance template",
+                "example": "gcloud compute instance-templates delete my-template",
+                "usage": "Remove template definition (does not affect running instances)"
+            },
+            {
+                "command": "gcloud compute instance-templates list",
+                "description": "List all instance templates",
+                "example": "gcloud compute instance-templates list",
+                "usage": "Shows all template configurations available in the project"
+            },
+            {
+                "command": "gcloud compute instance-templates describe [TEMPLATE_NAME]",
+                "description": "Get detailed information about an instance template",
+                "example": "gcloud compute instance-templates describe my-template",
+                "usage": "Shows complete template configuration including machine type and disks"
+            }
+        ],
+        
+        "COMPUTE ENGINE - OPERATIONS": [
+            {
+                "command": "gcloud compute operations list --filter=\"user=[USERNAME]\" --format=json",
+                "description": "List compute operations by user in JSON format",
+                "example": "gcloud compute operations list --filter=\"user=john@example.com\" --format=json",
+                "usage": "Get detailed operation history for auditing and troubleshooting"
+            },
+            {
+                "command": "gcloud compute operations list --filter=\"user=[USERNAME]\"",
+                "description": "List compute operations by user in text format",
+                "example": "gcloud compute operations list --filter=\"user=john@example.com\"",
+                "usage": "View operation history in human-readable table format"
+            },
+            {
+                "command": "gcloud compute operations describe [OPERATION_NAME]",
+                "description": "Get detailed information about a specific operation",
+                "example": "gcloud compute operations describe operation-1234567890123-abcd",
+                "usage": "Shows operation status, progress, errors, and resource details"
+            }
+        ],
+        
+        "ORGANIZATIONS": [
+            {
+                "command": "gcloud organizations list",
+                "description": "List all organizations you have access to",
+                "example": "gcloud organizations list",
+                "usage": "Shows organization IDs, display names, and lifecycle state"
+            }
+        ],
+        
+        "SYSTEM MANAGEMENT": [
+            {
+                "command": "gcloud components update",
+                "description": "Update gcloud CLI components to the latest version",
+                "example": "gcloud components update",
+                "usage": "Updates core gcloud tools and installed components"
+            },
+            {
+                "command": "gcloud alpha interactive",
+                "description": "Start interactive gcloud shell with auto-completion",
+                "example": "gcloud alpha interactive",
+                "usage": "Interactive shell with command suggestions and help"
+            }
+        ]
+    }
+    
+    # Display all commands by section
+    for section, commands in commands_sections.items():
+        print(f"📋 {section}")
+        print("=" * len(f"📋 {section}"))
+        print()
+        
+        for cmd_info in commands:
+            print(f"🔧 COMMAND: {cmd_info['command']}")
+            print(f"📖 DESCRIPTION: {cmd_info['description']}")
+            print(f"💡 EXAMPLE: {cmd_info['example']}")
+            print(f"🎯 USAGE: {cmd_info['usage']}")
+            print("-" * 60)
+            print()
+    
+    print("=" * 80)
+    print("                    END OF COMMANDS REFERENCE")
+    print("=" * 80)
+    
+    input('\nPress enter to get back to the main menu: ')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " <-- Exited GCLOUD COMMANDS REFERENCE mode\n")
+        logfile.close()
+    main_menu()
+
+def global_help():
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " --> Accessed GLOBAL HELP mode\n")
+        logfile.close()
+    
+    print('=' * 80)
+    print('                    GCP PYTHON INTERACTIVE CLI - GLOBAL HELP')
+    print('=' * 80)
+    print()
+    
+    print("🚀 PROGRAM OVERVIEW")
+    print("=" * 40)
+    print("This interactive CLI tool provides a user-friendly interface for Google Cloud")
+    print("Platform (GCP) operations. It organizes gcloud commands into logical sections")
+    print("and provides guided workflows for common cloud management tasks.")
+    print()
+    print("✨ KEY FEATURES:")
+    print("• Project and billing management")
+    print("• Account authentication and switching") 
+    print("• Compute Engine VM operations")
+    print("• Comprehensive logging and audit trails")
+    print("• Advanced scripting capabilities")
+    print("• Operations tracking and analysis")
+    print()
+    
+    print("📋 MAIN MENU GUIDE")
+    print("=" * 40)
+    print()
+    
+    sections_help = {
+        "PROJECT MANAGEMENT (Options 1-7)": {
+            "description": "Core project operations for GCP resource management",
+            "options": [
+                "1️⃣  Billing Data: Check project billing account associations and status",
+                "2️⃣  Project Info: Get detailed metadata about specific projects", 
+                "3️⃣  Configurations: View all configured gcloud profiles and settings",
+                "4️⃣  Active Project: Display currently selected default project",
+                "5️⃣  Set Project: Change the active project for operations",
+                "6️⃣  List Projects: View all accessible projects in your account",
+                "7️⃣  Organizations: List organization resources you can access"
+            ],
+            "usage": "Start here to set up your project context before other operations"
+        },
+        
+        "AUTHENTICATION (Option L)": {
+            "description": "Account management and authentication workflows",
+            "options": [
+                "🔐 Multiple login methods: Google accounts, workforce pools, corporate SSO",
+                "👤 Account switching between multiple authenticated users", 
+                "⚙️  Configuration management for different environments",
+                "🔧 Property management for workforce identity federation"
+            ],
+            "usage": "Use when switching between accounts or setting up authentication"
+        },
+        
+        "COMPUTE ENGINE (Option C)": {
+            "description": "Complete VM and infrastructure management suite",
+            "submenu_sections": {
+                "Basic Operations (1-10)": [
+                    "Zone/Region management and configuration",
+                    "VM instance discovery and listing",
+                    "Image catalog browsing and search"
+                ],
+                "VM Management (11-19)": [
+                    "SSH connectivity with key management",
+                    "Instance creation with default settings", 
+                    "Instance deletion and cleanup",
+                    "Template creation for scaling"
+                ],
+                "Advanced Features": [
+                    "🔧 Operations Menu (O): Audit trails and operation tracking",
+                    "🎓 Advanced Mode (A): Custom VM creation with detailed specs",
+                    "🔑 SSH Key Management: Automated key provisioning"
+                ]
+            },
+            "usage": "Primary interface for all VM and compute operations"
+        },
+        
+        "SYSTEM TOOLS": {
+            "description": "Maintenance, logging, and advanced functionality", 
+            "options": [
+                "🔄 Update (U): Keep gcloud CLI components current",
+                "📊 System Logs (S): View program activity and audit trails", 
+                "🎯 Test Cases (T): Build and execute custom test scenarios",
+                "💻 Free Input (F): Direct gcloud command execution",
+                "🔬 Interactive (A): Alpha gcloud shell with auto-completion"
+            ],
+            "usage": "Maintenance tasks and advanced scripting operations"
+        }
+    }
+    
+    for section, info in sections_help.items():
+        print(f"📂 {section}")
+        print("-" * len(f"📂 {section}"))
+        print(f"📖 {info['description']}")
+        print()
+        
+        if 'options' in info:
+            for option in info['options']:
+                print(f"   {option}")
+            print()
+        
+        if 'submenu_sections' in info:
+            for subsection, items in info['submenu_sections'].items():
+                print(f"   📋 {subsection}:")
+                for item in items:
+                    print(f"      • {item}")
+                print()
+        
+        print(f"💡 USAGE: {info['usage']}")
+        print()
+        print("-" * 60)
+        print()
+    
+    print("🔧 SPECIAL FEATURES GUIDE")
+    print("=" * 40)
+    print()
+    
+    features_guide = {
+        "LOGGING SYSTEM": {
+            "description": "All operations are automatically logged with timestamps",
+            "features": [
+                "📝 System event logging in gcp_system_log.log",
+                "🔍 Operation-specific logs in compute_operations_logs/",
+                "🔎 Regex search capabilities across all log files",
+                "🗑️  Log cleanup and management tools"
+            ],
+            "usage": "Monitor program usage and troubleshoot issues"
+        },
+        
+        "OPERATIONS TRACKING": {
+            "description": "Detailed audit trails for compute operations",
+            "features": [
+                "👤 User-based operation filtering",
+                "📊 JSON and text format exports",
+                "🔍 Log file search and analysis",
+                "📅 Timestamp-based organization"
+            ],
+            "usage": "Compliance, auditing, and operations analysis"
+        },
+        
+        "ADVANCED SSH MANAGEMENT": {
+            "description": "Automated SSH key provisioning and management",
+            "features": [
+                "🔑 Automatic SSH key generation",
+                "📋 VM listing with network details",
+                "⚡ One-click key deployment to instances",
+                "🔧 Both gcloud and direct SSH connection options"
+            ],
+            "usage": "Streamlined VM access without manual key management"
+        }
+    }
+    
+    for feature, info in features_guide.items():
+        print(f"⚡ {feature}")
+        print("-" * len(f"⚡ {feature}"))
+        print(f"📖 {info['description']}")
+        print()
+        
+        for item in info['features']:
+            print(f"   {item}")
+        print()
+        
+        print(f"💡 USAGE: {info['usage']}")
+        print()
+        print("-" * 60)
+        print()
+    
+    print("🎯 WORKFLOW RECOMMENDATIONS")
+    print("=" * 40)
+    print()
+    print("🏁 GETTING STARTED:")
+    print("   1. Start with option 'L' to authenticate")
+    print("   2. Use option '4' to verify your active project")
+    print("   3. Set correct project with option '5' if needed")
+    print("   4. Access Compute Engine (C) for VM operations")
+    print()
+    print("🔧 TYPICAL VM WORKFLOW:")
+    print("   1. Check regions/zones (Compute → 1,2)")
+    print("   2. Set appropriate region (Compute → 4)")
+    print("   3. List existing VMs (Compute → 6)")
+    print("   4. Create new VMs (Compute → 13)")
+    print("   5. Setup SSH access (Compute → 12)")
+    print("   6. Connect to VMs (Compute → 11)")
+    print()
+    print("📊 MONITORING & MAINTENANCE:")
+    print("   1. Review system logs regularly (S)")
+    print("   2. Check operations audit trails (Compute → O)")
+    print("   3. Update gcloud components (U)")
+    print("   4. Clean up old log files as needed")
+    print()
+    
+    print("⚠️  IMPORTANT NOTES")
+    print("=" * 40)
+    print("🔐 SECURITY:")
+    print("   • All operations require proper GCP authentication")
+    print("   • SSH keys are generated securely with proper permissions")
+    print("   • Operations are logged for audit compliance")
+    print()
+    print("💰 COST AWARENESS:")
+    print("   • VM creation incurs compute charges")
+    print("   • Always delete unused instances to avoid costs")
+    print("   • Monitor billing through option '1'")
+    print()
+    print("🛠️  TROUBLESHOOTING:")
+    print("   • Check system logs (S) for error details")
+    print("   • Verify authentication with configuration list (3)")
+    print("   • Use interactive mode (A) for command debugging")
+    print("   • Operations menu (Compute → O) shows detailed command history")
+    print()
+    
+    print("=" * 80)
+    print("                    END OF GLOBAL HELP")
+    print("=" * 80)
+    
+    input('\nPress enter to get back to the main menu: ')
+    now = datetime.now()
+    with open(gcp_system_log_file, 'a') as logfile:
+        logfile.write(str(now) + " <-- Exited GLOBAL HELP mode\n")
         logfile.close()
     main_menu()
 
@@ -1619,6 +2287,8 @@ def main_menu():
     print('t - Test case builder')
     print('f - Free command line input - advanced script module. Requires knowledge on gcloud cli.')
     print('s - System logs and events mode')
+    print('r - Show all gcloud commands reference with examples and usage')
+    print('h - Global help - Program guide and workflow instructions')
     print('\n')
     selection=input('Type a number or letter from the menu and press enter to operate: ')
     if selection == '1':
@@ -1649,6 +2319,10 @@ def main_menu():
         free_command_input_menu()
     if selection == 's':
         system_logs_events()
+    if selection == 'r':
+        show_all_gcloud_commands()
+    if selection == 'h':
+        global_help()
     else:
          #input('\nInvalid option selected, you must type a number or letter from the menu. Press enter to get back to main menu: ')
          main_menu()
